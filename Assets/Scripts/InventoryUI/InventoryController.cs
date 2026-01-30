@@ -1,14 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryController : MonoBehaviour
+using CommonUtilLib.ThreadSafe;
+
+
+public class InventoryController : SingleTonForGameObject<InventoryController>
 {
+    [SerializeField] private GameObject m_layout_InventoryBackground;
     [SerializeField] private GameObject inventoryPanel; 
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private int columnSize = 8;
     [SerializeField] private int rowSize = 4;
     [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private InventoryDragIcon dragIconUI;
+
+    [SerializeField] private GameObject m_gameObjectt_OpenInventoryBtn;
+
+
+    public void Awake()
+    {
+        SetInstance(this);
+    }
 
     public int DraggingIndex { get; private set; } = -1;
     public void BeginDrag(int index, Sprite iconSprite)
@@ -45,9 +57,9 @@ public class InventoryController : MonoBehaviour
 
         // 3. 데이터 로드 및 적용
         RefreshAll();
-        
+
         // 시작 시 인벤토리는 닫힌 상태
-        inventoryPanel.SetActive(false);
+        m_layout_InventoryBackground.SetActive(false);
     }
 
     public void RefreshAll()
@@ -84,11 +96,24 @@ public class InventoryController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            bool isActive = !inventoryPanel.activeSelf;
-            inventoryPanel.SetActive(isActive);
-
-            // 인벤토리가 열릴 때 최신 정보로 갱신
-            if (isActive) RefreshAll();
+            OpenInventory();
         }    
+    }
+
+    public void OpenInventory()
+    {
+        bool isActive = !m_layout_InventoryBackground.activeSelf;
+        m_layout_InventoryBackground.SetActive(isActive);
+
+        // 인벤토리가 열릴 때 최신 정보로 갱신
+        if (isActive) RefreshAll();
+
+        MaskSlotControl.Instance.ActiveMaskSlotUIs();
+        m_gameObjectt_OpenInventoryBtn.SetActive(!isActive);
+    }
+
+    protected override void Dispose(bool bisDisposing)
+    {
+        throw new System.NotImplementedException();
     }
 }

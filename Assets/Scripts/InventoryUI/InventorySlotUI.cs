@@ -71,6 +71,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             iconImage.gameObject.SetActive(false);
             countText.text = "";
+            Debug.Log("A");
             return;
         }
 
