@@ -32,6 +32,8 @@ public struct SaveData
 
     // TODO : SaveDataBuffer에 반영해야함
     public MaskType CurMask;
+
+    public int CompletedCraftItemIndex;
 }
 
 internal static class SaveDataExtension
@@ -91,6 +93,12 @@ internal static class SaveDataExtension
         {
             Debug.Log($"인벤토리 공간 부족! 남은 수량: {remainingCount}");
         }
+    }
+    public static void SetInventoryItem(this SaveData saveData, in int index, in ItemType itemType, in int count)
+    {
+        saveData.InventoryItems[index].ItemType = itemType;
+        saveData.InventoryItems[index].Count = count;
+        SaveDataBuffer.Instance.SaveData();
     }
 
     /// <summary>

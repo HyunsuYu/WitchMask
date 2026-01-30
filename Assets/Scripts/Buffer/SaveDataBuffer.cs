@@ -56,8 +56,14 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             m_saveData = new SaveData()
             {
                 PlayerPos = Vector2Int.zero,
-                InventoryItems = new SaveData.InventoryNode[32]
+                InventoryItems = new SaveData.InventoryNode[32],
+                CurMask = global::SaveData.MaskType.HoneyBee,
+                CompletedCraftItemIndex = -1
             };
+            for(int index = 0; index < m_saveData.Value.InventoryItems.Length; index++)
+            {
+                m_saveData.Value.InventoryItems[index].ItemType = ItemType.None;
+            }
 
             SaveData();
         }
