@@ -3,32 +3,80 @@ using UnityEngine;
 
 public class InventoryController : MonoBehaviour
 {
-    private ItemDictionary itemDictionary;
-    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private GameObject inventoryPanel; 
     [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private int columnSize;
-    [SerializeField] private int rowSize;
-    [SerializeField] private GameObject [] itemPrefabs;
+    [SerializeField] private int columnSize = 8;
+    [SerializeField] private int rowSize = 4;
+    [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private InventoryDragIcon dragIconUI;
 
+    public int DraggingIndex { get; private set; } = -1;
+    public void BeginDrag(int index, Sprite iconSprite)
+    {
+        DraggingIndex = index;
+        dragIconUI.ShowIcon(true, iconSprite);
+    }
+    public void OnDrag(Vector2 ScreenPos) => dragIconUI.UpdatePosition(ScreenPos);
+    public void EndDrag()
+    {
+        DraggingIndex = -1;
+        dragIconUI.ShowIcon(false);
+    }
+
+    private List<InventorySlotUI> m_slotUIList = new List<InventorySlotUI>();
 
     private void Start()
     {
-        itemDictionary = FindAnyObjectByType<ItemDictionary>();
+        InitInventoryUI();
+    }
 
-        for (int i = 0; i < rowSize * columnSize; i++)
+    private void InitInventoryUI()
+    {
+        // 2. columnSize * rowSize 만큼 슬롯 생성
+        int targetSlotCount = columnSize * rowSize;
+        for (int i = 0; i < targetSlotCount; i++)
         {
+            GameObject slotGo = Instantiate(slotPrefab, inventoryPanel.transform);
+            InventorySlotUI slotUI = slotGo.GetComponent<InventorySlotUI>();
+            
+            slotUI.Init(i, this);
+            m_slotUIList.Add(slotUI);
+        }
 
-            Slot slot = Instantiate(slotPrefab, inventoryPanel.transform).GetComponent<Slot>();
-            slot.slotIndex = i;
+        // 3. 데이터 로드 및 적용
+        RefreshAll();
         
-            // 아이템 불러오기
-            if(i < itemPrefabs.Length)
-            {
-                GameObject item = Instantiate(itemPrefabs[i], slot.transform);
-                item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                slot.curItem = item;
-            }
+        // 시작 시 인벤토리는 닫힌 상태
+        inventoryPanel.SetActive(false);
+    }
 
+    public void RefreshAll()
+    {
+        // 싱글톤 인스턴스 확인
+        if (SaveDataBuffer.Instance == null) return;
+
+        // 세이브 데이터 배열 가져오기
+        var inventoryData = SaveDataBuffer.Instance.Data.InventoryItems;
+        int targetSlotCount = columnSize * rowSize;
+
+        for (int i = 0; i < targetSlotCount; i++)
+        {
+            // 데이터가 존재하고, 현재 인덱스가 데이터 범위 내에 있는 경우
+            if (inventoryData != null && i < inventoryData.Length)
+            {
+                ItemType type = inventoryData[i].ItemType;
+                int count = inventoryData[i].Count;
+
+                // 데이터베이스에서 시각 정보(아이콘 등) 가져오기
+                var itemInfo = itemDatabase.GetItemInfo(type);
+                m_slotUIList[i].UpdateSlot(itemInfo, count);
+            }
+            else
+            {
+                // 데이터가 없는 인덱스(14번 이후 등)는 빈 슬롯으로 초기화
+                // ItemType.None을 가진 기본 ItemInfo를 전달
+                m_slotUIList[i].UpdateSlot(default, 0);
+            }
         }
     }
 
@@ -36,26 +84,11 @@ public class InventoryController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+            bool isActive = !inventoryPanel.activeSelf;
+            inventoryPanel.SetActive(isActive);
+
+            // 인벤토리가 열릴 때 최신 정보로 갱신
+            if (isActive) RefreshAll();
         }    
-    }
-
-    /// <summary>
-    /// 세이브 파일에 저장
-    /// </summary>
-    public List<SaveData.InventoryNode> GetInventoryItems()
-    {
-        List<SaveData.InventoryNode> invData = new List<SaveData.InventoryNode>();
-        foreach (Transform slotTransform in inventoryPanel.transform)
-        {
-            Slot slot = slotTransform.GetComponent<Slot>();
-            if(slot.curItem != null)
-            {
-                Item item = slot.curItem.GetComponent<Item>();
-                invData.Add(new SaveData.InventoryNode {ItemType = item.ID});
-            }
-        }
-
-        return invData;
     }
 }

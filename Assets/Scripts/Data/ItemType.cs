@@ -3,129 +3,65 @@ using UnityEngine;
 
 public enum ItemType
 {
-    // ì§€ìƒ(ê½ƒë°­)
+    // Áö»ó(²É¹ç)
     /// <summary>
-    /// íŠ¤ë¦½
+    /// Æ«¸³
     /// </summary>
     Flower_Red,
     /// <summary>
-    /// ìˆ˜êµ­
+    /// ¼ö±¹
     /// </summary>
     Flower_Blue,
     /// <summary>
-    /// ë¯¼ë“¤ë ˆ
+    /// ¹Îµé·¹
     /// </summary>
     Flower_Yellow,
     /// <summary>
-    /// ì½”ìŠ¤ëª¨ìŠ¤
+    /// ÄÚ½º¸ğ½º
     /// </summary>
     Flower_White,
     /// <summary>
-    /// ê¿€
+    /// ²Ü
     /// </summary>
     Honey,
     /// <summary>
-    /// ë‹¨ë‹¨í•œ ì”¨ì•—
+    /// ´Ü´ÜÇÑ ¾¾¾Ñ
     /// </summary>
     Seed,
     /// <summary>
-    /// ë¬´ì§€ê°œ ë‚˜ë¹„ ë‚ ê°œ - ì›€ì§ì´ëŠ” ì˜¤ë¸Œì íŠ¸
+    /// ¹«Áö°³ ³ªºñ ³¯°³ - ¿òÁ÷ÀÌ´Â ¿ÀºêÁ§Æ®
     /// </summary>
     ButterflyWing,
 
-    // ì§€ìƒ(ìˆ²)
+    // ¹°¼Ó
     /// <summary>
-    /// ë‚˜ë­‡ì
-    /// </summary>
-    FreshLeaf,
-    /// <summary>
-    /// ë°˜ë”§ë¶ˆì´
-    /// </summary>
-    Firefly,
-    /// <summary>
-    /// ë²„ì„¯
-    /// </summary>
-    Mushroom,
-    /// <summary>
-    /// ë§ˆë¥¸ ì”ê°€ì§€
-    /// </summary>
-    TreeBranch,
-    /// <summary>
-    /// íŠ¼íŠ¼í•œ ë‚˜ë¬´
-    /// </summary>
-    Tree,
-    /// <summary>
-    /// ëŒ
-    /// </summary>
-    Stone,
-    /// <summary>
-    /// ê¹ƒí„¸
-    /// </summary>
-    Feather,
-    /// <summary>
-    /// ì§ìŠ¹ì˜ í„¸
-    /// </summary>
-    BeastHair,
-
-    // ë¬¼ì†
-    /// <summary>
-    /// ì§„ì£¼
+    /// ÁøÁÖ
     /// </summary>
     Pearl,
     /// <summary>
-    /// ì¡°ê°œ
+    /// Á¶°³
     /// </summary>
     Seashell,
     /// <summary>
-    /// ë¯¸ì—­
+    /// ¹Ì¿ª
     /// </summary>
     SeaWeed,
     /// <summary>
-    /// ì†Œë¼
+    /// ¼Ò¶ó
     /// </summary>
     Conch,
     /// <summary>
-    /// ì‚°í˜¸ ì¡°ê°
+    /// »êÈ£ Á¶°¢
     /// </summary>
     Coral,
     /// <summary>
-    /// ë¹„ëŠ˜ - ì›€ì§ì„
+    /// ºñ´Ã - ¿òÁ÷ÀÓ
     /// </summary>
     FishSkin,
     /// <summary>
-    /// ë¬¼ë°©ìš¸
+    /// ¹°¹æ¿ï
     /// </summary>
     Bubble,
-
-    // ë•…ì†
-    /// <summary>
-    /// ìˆ˜ì • íŒŒí¸
-    /// </summary>
-    Cristal,
-    /// <summary>
-    /// ê±°ë¯¸ì¤„
-    /// </summary>
-    Web,
-    /// <summary>
-    /// ë°•ì¥ ë‚ ê°œ
-    /// </summary>
-    BetWing,
-    /// <summary>
-    /// ê²€ì€ ì„íƒ„
-    /// </summary>
-    Coal,
-    /// <summary>
-    /// ë°œê´‘ ì´ë¼
-    /// </summary>
-    Moss,
-    /// <summary>
-    /// ì² ê´‘ì„
-    /// </summary>
-    Ironstone,
-    /// <summary>
-    /// ì§„í™
-    /// </summary>
-    Mud,
 
     // None
     None = int.MaxValue
