@@ -33,34 +33,34 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup.alpha = 1f;
 
         // Swap Slot
-        Slot dropSlot = eventData.pointerEnter?.GetComponent<Slot>();
+        InventorySlotUI dropSlot = eventData.pointerEnter?.GetComponent<InventorySlotUI>();
         if(dropSlot == null)
         {
             GameObject dropItem = eventData.pointerEnter;
             if (dropItem != null)
             {
-                dropSlot = dropItem.GetComponentInParent<Slot>();
+                dropSlot = dropItem.GetComponentInParent<InventorySlotUI>();
             }
         }
-        Slot originalSlot = originalParent.GetComponent<Slot>();
+        InventorySlotUI originalSlot = originalParent.GetComponent<InventorySlotUI>();
 
         if (dropSlot != null)
         {
-            // Slot has item -> Swap item 
-            if (dropSlot.curItem != null)
-            {
-                dropSlot.curItem.transform.SetParent(originalSlot.transform);
-                originalSlot.curItem = dropSlot.curItem;
-                dropSlot.curItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                originalSlot.curItem = null;
-            }
+            // // Slot has item -> Swap item 
+            // if (dropSlot.curItem != null)
+            // {
+            //     dropSlot.curItem.transform.SetParent(originalSlot.transform);
+            //     originalSlot.curItem = dropSlot.curItem;
+            //     dropSlot.curItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            // }
+            // else
+            // {
+            //     originalSlot.curItem = null;
+            // }
             
-            // 대상 슬롯이 비어있음: 아이템을 새 슬롯으로 그냥 옮김
-            transform.SetParent(dropSlot.transform);
-            dropSlot.curItem = gameObject;
+            // // 대상 슬롯이 비어있음: 아이템을 새 슬롯으로 그냥 옮김
+            // transform.SetParent(dropSlot.transform);
+            // dropSlot.curItem = gameObject;
 
         }
         else
