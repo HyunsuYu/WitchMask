@@ -31,11 +31,6 @@ public sealed class CraftTableSlot : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (m_holdItem == ItemType.None)
-        {
-            return;
-        }
-
         InventoryController.Instance.OnDrag(eventData.position);
     }
 
