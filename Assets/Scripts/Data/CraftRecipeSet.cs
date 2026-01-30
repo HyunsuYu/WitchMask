@@ -8,6 +8,8 @@ public sealed class CraftRecipeSet : ScriptableObject
 {
     [Serializable] public struct RecipeData
     {
+        public string Name;
+        public string Hint;
         public ItemType[] ConsumedItems;
     }
 

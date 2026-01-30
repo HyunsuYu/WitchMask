@@ -12,3 +12,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e050987e4fb4cd64e82eed865e3027a6, type: 3}
   m_Name: CraftRecipeSet
   m_EditorClassIdentifier: 
+  Recipes:
+  - Name: "\uB124\uBAA8\uD544\uB77C \uD3EC\uADFC \uCE68\uB300"
+    Hint: "\uD478\uB978 \uAF43 \uB450 \uC1A1\uC774\uB294 \uBC29\uC758 \uC11C\uB298\uD55C
+      \uBD81\uC11C\uCABD(1)\uACFC \uB0A8\uC11C\uCABD(5)\uC5D0 \uB450\uACE0, \uB2EC\uCF64\uD55C
+      \uAFC0 \uD55C \uBC29\uC6B8\uC740 \uB0A8\uB3D9\uCABD(6) \uB05D\uC5D0 \uB454\uB2E4."
+    ConsumedItems: 01000000ffffff7fffffff7fffffff7f0100000004000000
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 
+  - Name: 
+    Hint: 
+    ConsumedItems: 

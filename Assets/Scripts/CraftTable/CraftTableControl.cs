@@ -61,6 +61,11 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
         return m_craftTableSlots.ToList().IndexOf(craftTableSlot);
     }
 
+    internal void FlushItems()
+    {
+
+    }
+
     protected override void Dispose(bool bisDisposing)
     {
         throw new System.NotImplementedException();

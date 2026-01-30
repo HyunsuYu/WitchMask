@@ -55,10 +55,7 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     }
     public void OnDrag(Vector2 ScreenPos) 
     {
-        if (DraggingIndex != -1)
-        {
-            dragIconUI.UpdatePosition(ScreenPos);
-        }
+        dragIconUI.UpdatePosition(ScreenPos);
     }
     public void EndDrag()
     {
