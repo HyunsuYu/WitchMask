@@ -9,7 +9,6 @@ public struct SaveData
     {
         public ItemType ItemType;
         public int Count;
-        public Vector2Int slotIndex;
     }
 
 
@@ -26,15 +25,35 @@ public struct SaveData
 
 internal static class SaveDataExtension
 {
-    public static void AddInventoryItem(this SaveData saveData, in Vector2Int inventoryPos, in ItemType itemType, in int count = 1)
+    public static void AddInventoryItem(this SaveData saveData, in ItemType itemType, in int count = 1)
     {
         // TODO : Need to implement
     }
-    public static void MinusInventoryItem(this SaveData saveData, in Vector2Int inventoryPos, in ItemType itemType, in int count = 1)
+    /// <summary>
+    /// 만약 inventoryIndex에 있는 아이템이 ItemType.None이면 null return
+    /// </summary>
+    /// <param name="saveData"></param>
+    /// <param name="inventoryIndex"></param>
+    /// <param name="count"></param>
+    /// <returns></returns> <summary>
+    /// 
+    /// </summary>
+    /// <param name="itemType"></param>
+    /// <param name="saveData"></param>
+    /// <param name="inventoryIndex"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public static (ItemType itemType, int minusCount)? MinusInventoryItem(this SaveData saveData, in int inventoryIndex, in int count = 1)
+    {
+
+        
+        return (ItemType.None, count);
+    }
+    public static void MoveInventoryItem(this SaveData saveData, in int fromIndex, in int toIndex)
     {
         // TODO : Need to implement
     }
-    public static void SwapInventoryItem(this SaveData saveData, in Vector2Int pos_0, in Vector2Int pos_1)
+    public static void SwapInventoryItem(this SaveData saveData, in int itemIndex_0, in int itemIndex_1)
     {
         // TODO : Need to implement
     }

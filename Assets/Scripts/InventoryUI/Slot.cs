@@ -7,7 +7,7 @@ using TMPro;
 /// </summary> <summary>
 public class Slot : MonoBehaviour
 {
-    public Vector2Int slotPos;
+    public int slotIndex;
     public GameObject curItem; 
 
     [SerializeField] private Image iconImage;    // 슬롯의 아이콘 이미지 컴포넌트
