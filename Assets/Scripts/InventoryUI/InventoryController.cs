@@ -15,20 +15,18 @@ public class InventoryController : MonoBehaviour
     {
         itemDictionary = FindAnyObjectByType<ItemDictionary>();
 
-        for (int i = 0; i < rowSize; i++)
+        for (int i = 0; i < rowSize * columnSize; i++)
         {
-            for (int j = 0; j < columnSize; j++)
+
+            Slot slot = Instantiate(slotPrefab, inventoryPanel.transform).GetComponent<Slot>();
+            slot.slotIndex = i;
+        
+            // 아이템 불러오기
+            if(i < itemPrefabs.Length)
             {
-                Slot slot = Instantiate(slotPrefab, inventoryPanel.transform).GetComponent<Slot>();
-                slot.slotPos = new Vector2Int(i, j);
-            
-                // 아이템 불러오기
-                if(i < itemPrefabs.Length)
-                {
-                    GameObject item = Instantiate(itemPrefabs[i], slot.transform);
-                    item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                    slot.curItem = item;
-                }
+                GameObject item = Instantiate(itemPrefabs[i], slot.transform);
+                item.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                slot.curItem = item;
             }
 
         }
@@ -54,7 +52,7 @@ public class InventoryController : MonoBehaviour
             if(slot.curItem != null)
             {
                 Item item = slot.curItem.GetComponent<Item>();
-                invData.Add(new SaveData.InventoryNode {ItemType = item.ID, slotIndex = slot.slotPos});
+                invData.Add(new SaveData.InventoryNode {ItemType = item.ID});
             }
         }
 
