@@ -35,6 +35,10 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             }
             return m_saveData.Value;
         }
+        set
+        {
+            m_saveData = value;
+        }
     }
 
     private string DataPath

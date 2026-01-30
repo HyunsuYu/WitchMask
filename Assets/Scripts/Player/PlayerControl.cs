@@ -21,10 +21,19 @@ public sealed class PlayerControl : MonoBehaviour
 
     [SerializeField] private float m_moveSpeed = 1.0f;
 
+    private Animator m_animator;
+
     [Header("Interaction")]
     [SerializeField] private Tilemap m_tilemap_Prop;
 
     private ItemType m_prevInteractitemType = ItemType.None;
+
+    [SerializeField] private float m_mouseHoldLimit = 0.75f;
+    private bool m_bisInteractReady = true;
+    private float m_mouseHoldTimer = 0.0f;
+
+    [SerializeField] private RectTransform m_rectTransform_HoldBase;
+    [SerializeField] private RectTransform m_rectTransform_HoldBar;
 
     // Shot Magic
     [SerializeField] private ParticleImage m_particleImage_ShotMagic;
@@ -38,6 +47,7 @@ public sealed class PlayerControl : MonoBehaviour
     public void Awake()
     {
         m_rigidbody = GetComponent<Rigidbody2D>();
+        m_animator = GetComponent<Animator>();
 
         m_rectTransform_ReturnItemTarget = m_particleImage_ReturnItem.GetComponent<RectTransform>();
     }
@@ -121,13 +131,48 @@ public sealed class PlayerControl : MonoBehaviour
         #endregion
 
         #region Interaction
-        if (Input.GetMouseButtonDown(0) && BIsInteractionReachable())
+        if(Input.GetMouseButtonDown(0) && BIsInteractionReachable())
+        {
+            m_bisInteractReady = false;
+
+            m_particleImage_ShotMagic.Play();
+            m_rectTransform_HoldBase.gameObject.SetActive(true);
+        }
+        else if(!m_bisInteractReady && Input.GetMouseButton(0) && m_mouseHoldTimer < m_mouseHoldLimit && BIsInteractionReachable())
+        {
+            m_mouseHoldTimer += Time.deltaTime;
+
+            m_rectTransform_HoldBar.localScale = new Vector3()
+            {
+                x = m_mouseHoldTimer / m_mouseHoldLimit,
+                y = 1.0f
+            };
+
+            Vector2Int curResolutionSize = SettingDataBuffer.Instance.Data.GetGetResolutionSize();
+            Vector3 curMousePos = Input.mousePosition;
+            m_rectTransform_ShowMagicTarget.anchoredPosition = new Vector2()
+            {
+                x = curMousePos.x - curResolutionSize.x / 2,
+                y = curMousePos.y - curResolutionSize.y / 2
+            };
+            m_rectTransform_HoldBase.anchoredPosition = m_rectTransform_ShowMagicTarget.anchoredPosition;
+        }
+        else if(!Input.GetMouseButtonUp(0) || !BIsInteractionReachable())
+        {
+            m_mouseHoldTimer = 0.0f;
+            m_bisInteractReady = true;
+            m_particleImage_ShotMagic.Stop();
+            m_rectTransform_HoldBase.gameObject.SetActive(false);
+        }
+
+        if (m_mouseHoldTimer >= m_mouseHoldLimit && BIsInteractionReachable())
         {
             ItemType curItemType = GetCurMousePosItem();
             if (curItemType != ItemType.None)
             {
                 m_prevInteractitemType = curItemType;
-                HandleShotMagic();
+
+                m_particleImage_ShotMagic.Stop();
             }
         }
         #endregion
@@ -139,8 +184,14 @@ public sealed class PlayerControl : MonoBehaviour
         m_rectTransform_ReturnItemTarget.anchoredPosition = m_rectTransform_ShowMagicTarget.anchoredPosition;
         m_particleImage_ReturnItem.Play();
 
-        // Handle Inventory
+        m_mouseHoldTimer = 0.0f;
+        m_bisInteractReady = true;
+        m_particleImage_ShotMagic.Stop();
+        m_rectTransform_HoldBase.gameObject.SetActive(false);
 
+        // Handle Inventory
+        SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
+        SaveDataBuffer.Instance.SaveData();
         m_prevInteractitemType = ItemType.None;
     }
     #endregion
@@ -250,18 +301,6 @@ public sealed class PlayerControl : MonoBehaviour
         }));
 
         return curItemType;
-    }
-
-    private void HandleShotMagic()
-    {
-        Vector2Int curResolutionSize = SettingDataBuffer.Instance.Data.GetGetResolutionSize();
-        Vector3 curMousePos = Input.mousePosition;
-        m_rectTransform_ShowMagicTarget.anchoredPosition = new Vector2()
-        {
-            x = curMousePos.x - curResolutionSize.x / 2,
-            y = curMousePos.y - curResolutionSize.y / 2
-        };
-        m_particleImage_ShotMagic.Play();
     }
     #endregion
 }
