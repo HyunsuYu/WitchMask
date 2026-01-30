@@ -20,6 +20,7 @@ public sealed class PlayerControl : MonoBehaviour
     private PlayerHeadDirection m_headDirection = PlayerHeadDirection.Down;
 
     [SerializeField] private float m_moveSpeed = 1.0f;
+    [SerializeField] private bool m_bisMagicShotFailed = false;
 
     private Animator m_animator;
 
@@ -134,6 +135,7 @@ public sealed class PlayerControl : MonoBehaviour
         if(Input.GetMouseButtonDown(0) && BIsInteractionReachable())
         {
             m_bisInteractReady = false;
+            m_bisMagicShotFailed = false;
 
             m_particleImage_ShotMagic.Play();
             m_rectTransform_HoldBase.gameObject.SetActive(true);
@@ -157,8 +159,10 @@ public sealed class PlayerControl : MonoBehaviour
             };
             m_rectTransform_HoldBase.anchoredPosition = m_rectTransform_ShowMagicTarget.anchoredPosition;
         }
-        else if(!Input.GetMouseButtonUp(0) || !BIsInteractionReachable())
+        else if(Input.GetMouseButtonUp(0) || !BIsInteractionReachable())
         {
+            m_bisMagicShotFailed = true;
+
             m_mouseHoldTimer = 0.0f;
             m_bisInteractReady = true;
             m_particleImage_ShotMagic.Stop();
@@ -181,7 +185,13 @@ public sealed class PlayerControl : MonoBehaviour
     #region Unity Callbacks
     public void HandleReturnItem()
     {
+        if(m_bisMagicShotFailed)
+        {
+            return;
+        }
+
         m_rectTransform_ReturnItemTarget.anchoredPosition = m_rectTransform_ShowMagicTarget.anchoredPosition;
+        m_particleImage_ReturnItem.sprite = InventoryController.Instance.ItemDatabase.AllItems[(int)m_prevInteractitemType].Icon;
         m_particleImage_ReturnItem.Play();
 
         m_mouseHoldTimer = 0.0f;
@@ -190,11 +200,10 @@ public sealed class PlayerControl : MonoBehaviour
         m_rectTransform_HoldBase.gameObject.SetActive(false);
 
         // Handle Inventory
-        SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
-        SaveDataBuffer.Instance.SaveData();
+        CalculateAchieveInventoryItem();
         m_prevInteractitemType = ItemType.None;
 
-        //InventoryController.Instance.RefreshAll();
+        InventoryController.Instance.RefreshAll();
     }
     #endregion
 
@@ -303,6 +312,67 @@ public sealed class PlayerControl : MonoBehaviour
         }));
 
         return curItemType;
+    }
+
+    private void CalculateAchieveInventoryItem()
+    {
+        switch(m_prevInteractitemType)
+        {
+            case ItemType.Flower_Red:
+            case ItemType.Flower_Blue:
+            case ItemType.Flower_Yellow:
+            case ItemType.Flower_White:
+                if(UnityEngine.Random.Range(0.0f, 1.0f) < 0.3f)
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.Seed);
+                }
+                break;
+
+            case ItemType.Honey:
+
+                break;
+
+            case ItemType.Seed:
+
+                break;
+
+            case ItemType.ButterflyWing:
+
+                break;
+
+            case ItemType.Pearl:
+
+                break;
+
+            case ItemType.Seashell:
+
+                break;
+
+            case ItemType.SeaWeed:
+
+                break;
+
+            case ItemType.Conch:
+
+                break;
+
+            case ItemType.Coral:
+
+                break;
+
+            case ItemType.FishSkin:
+                if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.2f)
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.Bubble);
+                }
+                break;
+
+            case ItemType.Bubble:
+
+                break;
+        }
+        SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
+        SaveDataBuffer.Instance.SaveData();
     }
     #endregion
 }
