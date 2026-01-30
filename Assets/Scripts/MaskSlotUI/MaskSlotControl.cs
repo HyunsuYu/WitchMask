@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using CommonUtilLib.ThreadSafe;
 
-public sealed class MaskSlotControl : MonoBehaviour
+
+public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
 {
     [Serializable] public struct MaskSlot
     {
@@ -23,6 +25,8 @@ public sealed class MaskSlotControl : MonoBehaviour
     private int m_movingSlotIndex = -1;
 
     [Header("Base")]
+    [SerializeField] private GameObject m_layout_MaskSlotUI;
+
     [SerializeField] private Image m_image_MaskSlotMetaball;
     [SerializeField] private Image m_image_CurMaskSlot;
     private Material m_material;
@@ -46,6 +50,8 @@ public sealed class MaskSlotControl : MonoBehaviour
 
     public void Awake()
     {
+        SetInstance(this);
+
         m_material = m_image_MaskSlotMetaball.material;
         m_material.SetVector("_CurMaskSlotPos", new Vector4()
         {
@@ -128,10 +134,25 @@ public sealed class MaskSlotControl : MonoBehaviour
     #region Unity Callbacks
     public void SwapMask(int index)
     {
+        if(m_bisMaskSwapStarted)
+        {
+            return;
+        }
+
         m_movingSlotIndex = index;
         m_bisMaskSwapStarted = true;
 
         m_material.SetInteger("_BIsSlotActive", 1);
     }
+
+    protected override void Dispose(bool bisDisposing)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
+
+    internal void ActiveMaskSlotUIs()
+    {
+        m_layout_MaskSlotUI.SetActive(!m_layout_MaskSlotUI.activeSelf);
+    }
 }

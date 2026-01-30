@@ -35,8 +35,6 @@ public class InventoryTestUI : MonoBehaviour
         foreach (var item in itemDatabase.AllItems)
         {
             if (item.Type == ItemType.None) continue;
-
-            Debug.Log(item.Name);
             options.Add(item.Name);
             m_availableTypes.Add(item.Type);
         }
@@ -48,7 +46,7 @@ public class InventoryTestUI : MonoBehaviour
     /// <summary>
     /// 추가 테스트
     /// </summary> <summary>
-    private void OnClickAdd()
+    public void OnClickAdd()
     {
         if (m_availableTypes.Count == 0) return;
 

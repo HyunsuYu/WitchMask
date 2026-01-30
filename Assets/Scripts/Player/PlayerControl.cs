@@ -193,6 +193,8 @@ public sealed class PlayerControl : MonoBehaviour
         SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
         SaveDataBuffer.Instance.SaveData();
         m_prevInteractitemType = ItemType.None;
+
+        //InventoryController.Instance.RefreshAll();
     }
     #endregion
 
