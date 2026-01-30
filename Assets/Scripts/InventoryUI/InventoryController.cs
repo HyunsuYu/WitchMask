@@ -1,7 +1,7 @@
+using CommonUtilLib.ThreadSafe;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-using CommonUtilLib.ThreadSafe;
 
 
 public class InventoryController : SingleTonForGameObject<InventoryController>
@@ -23,6 +23,30 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     }
 
     public int DraggingIndex { get; private set; } = -1;
+    internal (ItemType holdItem, int count) DraggingItem
+    {
+        get
+        {
+            var data = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex];
+            return (data.ItemType, data.Count);
+        }
+    }
+
+    internal ItemDatabase ItemDatabase
+    {
+        get
+        {
+            return itemDatabase;
+        }
+    }
+    internal InventoryDragIcon DragIcon
+    {
+        get
+        {
+            return dragIconUI;
+        }
+    }
+
     public void BeginDrag(int index, Sprite iconSprite)
     {
         DraggingIndex = index;
@@ -40,6 +64,8 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     private void Start()
     {
         InitInventoryUI();
+
+        dragIconUI.ShowIcon(false);
     }
 
     private void InitInventoryUI()

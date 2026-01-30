@@ -38,20 +38,48 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     // 드롭 (이 슬롯 위에 아이템을 놓았을 때)
     public void OnDrop(PointerEventData eventData)
     {
-        int fromIndex = controller.DraggingIndex;
-        int toIndex = myIndex;
-
-        if (fromIndex != -1 && fromIndex != toIndex)
+        if(!CraftTableControl.Instance.BIsCraftTableSlotDraging)
         {
-            // [유저님이 원하신 직접 접근 방식]
-            SaveData data = SaveDataBuffer.Instance.Data;
-            
-            // 데이터 이동/스왑 로직 실행
-            data.MoveInventoryItem(fromIndex, toIndex);
-            
-            // 데이터 물리 저장 및 UI 전체 새로고침
-            SaveDataBuffer.Instance.SaveData();
-            controller.RefreshAll();
+            int fromIndex = controller.DraggingIndex;
+            int toIndex = myIndex;
+
+            if (fromIndex != -1 && fromIndex != toIndex)
+            {
+                // [유저님이 원하신 직접 접근 방식]
+                SaveData data = SaveDataBuffer.Instance.Data;
+
+                // 데이터 이동/스왑 로직 실행
+                data.MoveInventoryItem(fromIndex, toIndex);
+
+                // 데이터 물리 저장 및 UI 전체 새로고침
+                SaveDataBuffer.Instance.SaveData();
+                controller.RefreshAll();
+            }
+        }
+        else
+        {
+            var craftDraggingItem = CraftTableControl.Instance.DraggingItem;
+            if (SaveDataBuffer.Instance.Data.InventoryItems[myIndex].ItemType == ItemType.None)
+            {
+                SaveDataBuffer.Instance.Data.SetInventoryItem(myIndex, craftDraggingItem.holdItem, craftDraggingItem.count);
+            }
+            else
+            {
+                var inventoryItem = SaveDataBuffer.Instance.Data.InventoryItems[myIndex];
+                CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].SetFromInventorySlot(inventoryItem.ItemType, inventoryItem.Count);
+                SaveDataBuffer.Instance.Data.InventoryItems[myIndex] = new SaveData.InventoryNode()
+                {
+                    ItemType = craftDraggingItem.holdItem,
+                    Count = inventoryItem.Count
+                };
+                SaveDataBuffer.Instance.SaveData();
+
+                return;
+            }
+
+            CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].ResetFromInventorySlot();
+            CraftTableControl.Instance.BIsCraftTableSlotDraging = false;
+            InventoryController.Instance.RefreshAll();
         }
     }
 
@@ -71,7 +99,6 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             iconImage.gameObject.SetActive(false);
             countText.text = "";
-            Debug.Log("A");
             return;
         }
 
