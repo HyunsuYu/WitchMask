@@ -1,0 +1,9 @@
+{
+    "Screen": {
+        "Resolution": 0,
+        "BIsFullScreen": true
+    },
+    "Audio": {
+        "MasterVolume": 0.8
+    }
+}
