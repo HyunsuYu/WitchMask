@@ -40,6 +40,7 @@ internal static class SaveDataExtension
 
     public static void AddInventoryItem(this SaveData saveData, in ItemType itemType, in int count = 1)
     {
+        if (itemType == ItemType.None || count <= 0) return;
         int remainingCount = count;
 
         // 1단계: 이미 해당 아이템이 있는 슬롯 중, 여유 공간이 있는 슬롯에 먼저 채웁니다.
@@ -213,6 +214,11 @@ internal static class SaveDataExtension
         else
         {
             saveData.SwapInventoryItem(fromIndex, toIndex);
+        }
+
+        for (int i = 0; i < saveData.InventoryItems.Length; i++)
+        {
+            Debug.Log($"슬롯 {i}: {saveData.InventoryItems[i].ItemType} x {saveData.InventoryItems[i].Count}");
         }
 
         SaveDataBuffer.Instance.SaveData();
