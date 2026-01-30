@@ -25,12 +25,20 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     public int DraggingIndex { get; private set; } = -1;
     public void BeginDrag(int index, Sprite iconSprite)
     {
+        Debug.Log("BeginDrag: " + index);
         DraggingIndex = index;
         dragIconUI.ShowIcon(true, iconSprite);
     }
-    public void OnDrag(Vector2 ScreenPos) => dragIconUI.UpdatePosition(ScreenPos);
+    public void OnDrag(Vector2 ScreenPos) 
+    {
+        if (DraggingIndex != -1)
+        {
+            dragIconUI.UpdatePosition(ScreenPos);
+        }
+    }
     public void EndDrag()
     {
+        Debug.Log("EndDrag"+ DraggingIndex);
         DraggingIndex = -1;
         dragIconUI.ShowIcon(false);
     }

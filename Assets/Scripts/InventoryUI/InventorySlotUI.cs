@@ -38,6 +38,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     // 드롭 (이 슬롯 위에 아이템을 놓았을 때)
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log("OnDrop to slot: " + myIndex);
         int fromIndex = controller.DraggingIndex;
         int toIndex = myIndex;
 
@@ -53,6 +54,8 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             SaveDataBuffer.Instance.SaveData();
             controller.RefreshAll();
         }
+
+        // controller.EndDrag();
     }
 
     // --- 드래그 끝 ---
@@ -71,7 +74,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             iconImage.gameObject.SetActive(false);
             countText.text = "";
-            Debug.Log("A");
+            // Debug.Log("A");
             return;
         }
 
