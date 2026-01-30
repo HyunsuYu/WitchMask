@@ -52,8 +52,9 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
             m_saveData = new SaveData()
             {
                 PlayerPos = Vector2Int.zero,
-                InventoryItems = new SaveData.InventoryNode[40]
+                InventoryItems = new SaveData.InventoryNode[32]
             };
+
             SaveData();
         }
         else
