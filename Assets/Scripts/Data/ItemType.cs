@@ -3,127 +3,127 @@ using UnityEngine;
 
 public enum ItemType
 {
-    // Áö»ó(²É¹ç)
+    // ì§€ìƒ(ê½ƒë°­)
     /// <summary>
-    /// Æ«¸³
+    /// íŠ¤ë¦½
     /// </summary>
     Flower_Red,
     /// <summary>
-    /// ¼ö±¹
+    /// ìˆ˜êµ­
     /// </summary>
     Flower_Blue,
     /// <summary>
-    /// ¹Îµé·¹
+    /// ë¯¼ë“¤ë ˆ
     /// </summary>
     Flower_Yellow,
     /// <summary>
-    /// ÄÚ½º¸ð½º
+    /// ì½”ìŠ¤ëª¨ìŠ¤
     /// </summary>
     Flower_White,
     /// <summary>
-    /// ²Ü
+    /// ê¿€
     /// </summary>
     Honey,
     /// <summary>
-    /// ´Ü´ÜÇÑ ¾¾¾Ñ
+    /// ë‹¨ë‹¨í•œ ì”¨ì•—
     /// </summary>
     Seed,
     /// <summary>
-    /// ¹«Áö°³ ³ªºñ ³¯°³ - ¿òÁ÷ÀÌ´Â ¿ÀºêÁ§Æ®
+    /// ë¬´ì§€ê°œ ë‚˜ë¹„ ë‚ ê°œ - ì›€ì§ì´ëŠ” ì˜¤ë¸Œì íŠ¸
     /// </summary>
     ButterflyWing,
 
-    // Áö»ó(½£)
+    // ì§€ìƒ(ìˆ²)
     /// <summary>
-    /// ³ª¹µÀÙ
+    /// ë‚˜ë­‡ìžŽ
     /// </summary>
     FreshLeaf,
     /// <summary>
-    /// ¹Ýµ÷ºÒÀÌ
+    /// ë°˜ë”§ë¶ˆì´
     /// </summary>
     Firefly,
     /// <summary>
-    /// ¹ö¼¸
+    /// ë²„ì„¯
     /// </summary>
     Mushroom,
     /// <summary>
-    /// ¸¶¸¥ ÀÜ°¡Áö
+    /// ë§ˆë¥¸ ìž”ê°€ì§€
     /// </summary>
     TreeBranch,
     /// <summary>
-    /// Æ°Æ°ÇÑ ³ª¹«
+    /// íŠ¼íŠ¼í•œ ë‚˜ë¬´
     /// </summary>
     Tree,
     /// <summary>
-    /// µ¹
+    /// ëŒ
     /// </summary>
     Stone,
     /// <summary>
-    /// ±êÅÐ
+    /// ê¹ƒí„¸
     /// </summary>
     Feather,
     /// <summary>
-    /// Áü½ÂÀÇ ÅÐ
+    /// ì§ìŠ¹ì˜ í„¸
     /// </summary>
     BeastHair,
 
-    // ¹°¼Ó
+    // ë¬¼ì†
     /// <summary>
-    /// ÁøÁÖ
+    /// ì§„ì£¼
     /// </summary>
     Pearl,
     /// <summary>
-    /// Á¶°³
+    /// ì¡°ê°œ
     /// </summary>
     Seashell,
     /// <summary>
-    /// ¹Ì¿ª
+    /// ë¯¸ì—­
     /// </summary>
     SeaWeed,
     /// <summary>
-    /// ¼Ò¶ó
+    /// ì†Œë¼
     /// </summary>
     Conch,
     /// <summary>
-    /// »êÈ£ Á¶°¢
+    /// ì‚°í˜¸ ì¡°ê°
     /// </summary>
     Coral,
     /// <summary>
-    /// ºñ´Ã - ¿òÁ÷ÀÓ
+    /// ë¹„ëŠ˜ - ì›€ì§ìž„
     /// </summary>
     FishSkin,
     /// <summary>
-    /// ¹°¹æ¿ï
+    /// ë¬¼ë°©ìš¸
     /// </summary>
     Bubble,
 
-    // ¶¥¼Ó
+    // ë•…ì†
     /// <summary>
-    /// ¼öÁ¤ ÆÄÆí
+    /// ìˆ˜ì • íŒŒíŽ¸
     /// </summary>
     Cristal,
     /// <summary>
-    /// °Å¹ÌÁÙ
+    /// ê±°ë¯¸ì¤„
     /// </summary>
     Web,
     /// <summary>
-    /// ¹ÚÁã ³¯°³
+    /// ë°•ì¥ ë‚ ê°œ
     /// </summary>
     BetWing,
     /// <summary>
-    /// °ËÀº ¼®Åº
+    /// ê²€ì€ ì„íƒ„
     /// </summary>
     Coal,
     /// <summary>
-    /// ¹ß±¤ ÀÌ³¢
+    /// ë°œê´‘ ì´ë¼
     /// </summary>
     Moss,
     /// <summary>
-    /// Ã¶±¤¼®
+    /// ì² ê´‘ì„
     /// </summary>
     Ironstone,
     /// <summary>
-    /// ÁøÈë
+    /// ì§„í™
     /// </summary>
     Mud,
 
