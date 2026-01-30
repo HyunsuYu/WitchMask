@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e050987e4fb4cd64e82eed865e3027a6, type: 3}
   m_Name: CraftRecipeSet
   m_EditorClassIdentifier: 
+  Recipes:
+  - ConsumedItems: 000000000000000000000000000000000000000000000000
+  - ConsumedItems: 000000000000000000000000
+  - ConsumedItems: 0100000001000000

@@ -8,7 +8,9 @@ using CommonUtilLib.ThreadSafe;
 public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl>
 {
     [SerializeField] private CraftTableSlot[] m_craftTableSlots;
-
+    [SerializeField] private CraftRecipeSet m_craftRecipeSet;
+    public CraftRecipeSet CraftRecipeSet { get { return m_craftRecipeSet; } }
+    
     private bool m_bisCraftTableSlotDraging = false;
     private (ItemType holdItem, int count, int fromCraftTableSlotIndex) m_draggingItem = (ItemType.None, 0, -1);
 
