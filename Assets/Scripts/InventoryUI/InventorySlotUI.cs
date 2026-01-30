@@ -81,6 +81,8 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             CraftTableControl.Instance.BIsCraftTableSlotDraging = false;
             InventoryController.Instance.RefreshAll();
         }
+
+        // controller.EndDrag();
     }
 
     // --- 드래그 끝 ---
