@@ -4,6 +4,14 @@ using UnityEngine;
 [System.Serializable]
 public struct SaveData
 {
+    public enum MaskType
+    {
+        HoneyBee,
+        Deer,
+        Fish,
+        Mole
+    }
+
     [System.Serializable]
     public struct InventoryNode
     {
@@ -21,6 +29,9 @@ public struct SaveData
     /// 인벤토리 아이템 목록. 크기는 반드시 40으로. 실제 UI 배치는 8 * 5로 배치
     /// </summary>
     public InventoryNode[] InventoryItems;
+
+    // TODO : SaveDataBuffer에 반영해야함
+    public MaskType CurMask;
 }
 
 internal static class SaveDataExtension
