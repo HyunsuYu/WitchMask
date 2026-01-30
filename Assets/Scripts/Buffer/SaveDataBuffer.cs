@@ -11,7 +11,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
 {
     private SaveData? m_saveData;
 
-    [SerializeField] private string m_fileName = "saveData.data";
+    [SerializeField] private string m_fileName = "SaveData.json";
 
 
     public void Awake()
@@ -70,9 +70,15 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
         }
 
         string jsonData = JsonConvert.SerializeObject(m_saveData.Value);
+
+        string directory = Path.GetDirectoryName(DataPath);
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
         File.WriteAllText(DataPath, jsonData);
     }
-
 
     protected override void Dispose(bool bisDisposing)
     {

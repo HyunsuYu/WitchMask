@@ -13,7 +13,7 @@ public struct SaveData
     /// <summary>
     /// 세이브 시점 플레이어 위치
     /// </summary>
-    public Vector2 PlayerPos;
+    public Vector2Int PlayerPos;
 
     /// <summary>
     /// 인벤토리 아이템 목록. 크기는 반드시 40으로. 실제 UI 배치는 8 * 5로 배치
