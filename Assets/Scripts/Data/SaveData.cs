@@ -1,12 +1,15 @@
 using UnityEngine;
 
 
+[System.Serializable]
 public struct SaveData
 {
+    [System.Serializable]
     public struct InventoryNode
     {
         public ItemType ItemType;
         public int Count;
+        public Vector2Int slotIndex;
     }
 
 
