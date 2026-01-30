@@ -8,10 +8,11 @@ using System.Linq;
 
 namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
 {
-    class Example06 : MonoBehaviour
+    class CraftRecipeController : MonoBehaviour
     {
         [SerializeField] ScrollView scrollView = default;
         [SerializeField] Window[] windows = default;
+        private int m_curWindowIndex;
 
         Window currentWindow;
 
@@ -29,6 +30,7 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
 
         void OnSelectionChanged(int index, MovementDirection direction)
         {
+            m_curWindowIndex = index;
             if (currentWindow != null)
             {
                 currentWindow.Out(direction);
