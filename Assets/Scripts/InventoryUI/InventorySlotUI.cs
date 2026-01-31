@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -62,6 +63,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             if (SaveDataBuffer.Instance.Data.InventoryItems[myIndex].ItemType == ItemType.None)
             {
                 SaveDataBuffer.Instance.Data.SetInventoryItem(myIndex, craftDraggingItem.holdItem, craftDraggingItem.count);
+                CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].ResetFromInventorySlot();
             }
             else
             {
@@ -70,14 +72,13 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 SaveDataBuffer.Instance.Data.InventoryItems[myIndex] = new SaveData.InventoryNode()
                 {
                     ItemType = craftDraggingItem.holdItem,
-                    Count = inventoryItem.Count
+                    Count = craftDraggingItem.count
                 };
                 SaveDataBuffer.Instance.SaveData();
 
                 return;
             }
 
-            CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].ResetFromInventorySlot();
             CraftTableControl.Instance.BIsCraftTableSlotDraging = false;
             InventoryController.Instance.RefreshAll();
         }
