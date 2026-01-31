@@ -134,6 +134,11 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
             OpenInventory();
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SoundManager.Instance.SetActiveSoundPanel();
+        }
+
         if (m_bisDragging && Input.GetMouseButtonDown(1) && DraggingIndex != -1 && SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count > 1)
         {
             PointerEventData ped = new PointerEventData(null);
