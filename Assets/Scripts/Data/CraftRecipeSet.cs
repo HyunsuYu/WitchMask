@@ -11,7 +11,7 @@ public sealed class CraftRecipeSet : ScriptableObject
         public string Name;
         public string Hint;
         public ItemType[] ConsumedItems;
-        public ItemType ResultItem;
+        public Sprite FurnitureSprite;
     }
 
 

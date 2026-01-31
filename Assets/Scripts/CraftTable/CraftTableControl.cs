@@ -23,7 +23,14 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
 
     [SerializeField] private Color m_color_Fail;
     [SerializeField] private Color m_color_Good;
+
     private bool m_bisCorrectCombination = false;
+
+    private bool m_bisBlurItems = false;
+    [SerializeField] private float m_blurDuration = 3.0f;
+    private float m_timer = 0.0f;
+
+    [SerializeField] private Image m_image_Result;
 
 
     public void Awake()
@@ -32,6 +39,11 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
     }
     public void FixedUpdate()
     {
+        if(m_bisCorrectCombination)
+        {
+            return;
+        }
+
         // 1. 현재 6개 슬롯의 아이템 상태를 배열로 수집
         // m_craftTableSlots의 순서(0~5)가 레시피의 ConsumedItems 순서와 1:1 매칭됩니다.
         ItemType[] currentLayout = m_craftTableSlots.Select(slot => slot.HoldItem).ToArray();
@@ -40,14 +52,38 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
         m_bisCorrectCombination = false;
         m_button.interactable = false;
         m_text_button.color = m_color_Fail;
-        foreach (var recipe in m_craftRecipeSet.Recipes)
+
+        CraftRecipeSet.RecipeData curRecipe = m_craftRecipeSet.Recipes[SaveDataBuffer.Instance.Data.CompletedCraftItemIndex + 1];
+        if (CheckRecipeMatch(currentLayout, curRecipe.ConsumedItems))
         {
-            if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
+            m_bisCorrectCombination = true;
+            m_button.interactable = true;
+            m_text_button.color = m_color_Good;
+            return;
+        }
+
+        //foreach (var recipe in m_craftRecipeSet.Recipes)
+        //{
+        //    if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
+        //    {
+        //        m_bisCorrectCombination = true;
+        //        m_button.interactable = true;
+        //        m_text_button.color = m_color_Good;
+        //        return;
+        //    }
+        //}
+    }
+    public void Update()
+    {
+        if(m_bisCorrectCombination && m_animator.GetCurrentAnimatorStateInfo(0).speed >= 0.95f)
+        {
+            m_timer += Time.deltaTime;
+
+
+            if(m_timer > m_blurDuration)
             {
-                m_bisCorrectCombination = true;
-                m_button.interactable = true;
-                m_text_button.color = m_color_Good;
-                return;
+                m_bisCorrectCombination = false;
+                m_bisCorrectCombination = false;
             }
         }
     }
@@ -83,14 +119,21 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
         ItemType[] currentLayout = m_craftTableSlots.Select(slot => slot.HoldItem).ToArray();
 
         // 2. 레시피 데이터베이스 순회 비교
-        foreach (var recipe in m_craftRecipeSet.Recipes)
+        CraftRecipeSet.RecipeData curRecipe = m_craftRecipeSet.Recipes[SaveDataBuffer.Instance.Data.CompletedCraftItemIndex + 1];
+        if (CheckRecipeMatch(currentLayout, curRecipe.ConsumedItems))
         {
-            if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
-            {
-                OnCraftSuccess(recipe);
-                return;
-            }
+            OnCraftSuccess(curRecipe);
+            return;
         }
+
+        //foreach (var recipe in m_craftRecipeSet.Recipes)
+        //{
+        //    if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
+        //    {
+        //        OnCraftSuccess(recipe);
+        //        return;
+        //    }
+        //}
 
         Debug.Log("일치하는 조합법이 없습니다.");
     }
@@ -111,14 +154,54 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
         Debug.Log($"조합 완료: {recipe.Name}");
         SoundManager.Instance.PlaySfx(SoundManager.SFX.CraftSFX00);
 
-        // 조합 성공 후 모든 슬롯 초기화
+        //// 조합 성공 후 모든 슬롯 초기화
+        //foreach (var slot in m_craftTableSlots)
+        //{
+        //    slot.ResetFromInventorySlot();
+        //}
+
+        // TODO: 결과물 아이템(recipe.ResultItem) 생성 또는 지급 로직
+        m_animator.Play("CraftTable_Combine");
+        Invoke(nameof(ChangeResultImage), 3.0f);
+    }
+    private void ChangeResultImage()
+    {
+        foreach (var slot in m_craftTableSlots)
+        {
+            //slot.ResetFromInventorySlot();
+            slot.SetImageTransparency(0.0f);
+        }
+        m_image_Result.sprite = m_craftRecipeSet.Recipes[SaveDataBuffer.Instance.Data.CompletedCraftItemIndex + 1].FurnitureSprite;
+        m_image_Result.color = Color.white;
+        m_button.gameObject.SetActive(false);
+
+        m_animator.Play("CraftTable_ResultHighlight");
+
+        SaveDataBuffer.Instance.Data = new SaveData()
+        {
+            BGMVolume = SaveDataBuffer.Instance.Data.BGMVolume,
+            SFXVolume = SaveDataBuffer.Instance.Data.SFXVolume,
+            CompletedCraftItemIndex = SaveDataBuffer.Instance.Data.CompletedCraftItemIndex + 1,
+            CurMask = SaveDataBuffer.Instance.Data.CurMask,
+            InventoryItems = SaveDataBuffer.Instance.Data.InventoryItems,
+            MasterVolume = SaveDataBuffer.Instance.Data.MasterVolume,
+            PlayerPos = SaveDataBuffer.Instance.Data.PlayerPos
+        };
+        SaveDataBuffer.Instance.SaveData();
+
+        Invoke(nameof(ResetResultImage), 3.0f);
+    }
+    private void ResetResultImage()
+    {
         foreach (var slot in m_craftTableSlots)
         {
             slot.ResetFromInventorySlot();
+            //slot.SetImageTransparency(0.0f);
         }
 
-        // TODO: 결과물 아이템(recipe.ResultItem) 생성 또는 지급 로직
-        m_animator.SetTrigger("Combine");
+        m_image_Result.sprite = null;
+        m_image_Result.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+        m_button.gameObject.SetActive(true);
     }
 
     private void OnCraftFailure()

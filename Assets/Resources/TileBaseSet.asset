@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: TileBaseSet
   m_EditorClassIdentifier: 
   TileBases:
-  - {fileID: 11400000, guid: 9cf28869b0094d044adcf77b3901d7b2, type: 2}
-  - {fileID: 11400000, guid: bcde7f03b69f7d74ebaf17c2f0a37499, type: 2}
-  - {fileID: 11400000, guid: aac4f63dc5b93a54aad0eb1affd06de6, type: 2}
-  - {fileID: 11400000, guid: 7ed992bdd22c8cf4c908f2cf551c2862, type: 2}
-  - {fileID: 11400000, guid: 5ba0087f4f4856d46bf81e266bc254ee, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 3daa7360b3b29484797a810c6abde114, type: 2}
+  - {fileID: 11400000, guid: 85e5c8eaf63f8cd409a1020d0c952785, type: 2}
+  - {fileID: 11400000, guid: b6aa85b5d892dbd40925ef81ab288b9e, type: 2}
+  - {fileID: 11400000, guid: f1521d3d2631e2549bf8c92d8070ad63, type: 2}
+  - {fileID: 11400000, guid: 9c71d6859cd03d046b596fea64e8fb96, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}

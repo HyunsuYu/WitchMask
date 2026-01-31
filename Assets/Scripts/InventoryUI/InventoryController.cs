@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 public class InventoryController : SingleTonForGameObject<InventoryController>
 {
     [SerializeField] private GameObject m_layout_InventoryBackground;
+    [SerializeField] private GameObject m_layout_GridBackground;
     [SerializeField] private GameObject inventoryPanel; 
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private int columnSize = 8;
@@ -134,6 +135,11 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
             OpenInventory();
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SoundManager.Instance.SetActiveSoundPanel();
+        }
+
         if (m_bisDragging && Input.GetMouseButtonDown(1) && DraggingIndex != -1 && SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count > 1)
         {
             PointerEventData ped = new PointerEventData(null);
@@ -164,6 +170,7 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     {
         bool isActive = !m_layout_InventoryBackground.activeSelf;
         m_layout_InventoryBackground.SetActive(isActive);
+        m_layout_GridBackground.SetActive(isActive);
 
         if (isActive) RefreshAll();
 

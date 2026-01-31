@@ -138,4 +138,9 @@ public sealed class CraftTableSlot : MonoBehaviour, IBeginDragHandler, IDragHand
 
         m_image_SlotItem.sprite = null;
     }
+
+    internal void SetImageTransparency(in float transparency)
+    {
+        m_image_SlotItem.color = new Color(1.0f, 1.0f, 1.0f, transparency);
+    }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 using AssetKits.ParticleImage;
+using UnityEngine.Events;
 
 
 public sealed class PlayerControl : MonoBehaviour
@@ -26,7 +27,8 @@ public sealed class PlayerControl : MonoBehaviour
     private Animator m_animator;
 
     [Header("Interaction")]
-    [SerializeField] private Tilemap m_tilemap_Prop;
+    [SerializeField] private Tilemap m_tilemap_Undersea;
+    [SerializeField] private Tilemap m_tilemap_Normal;
 
     private ItemType m_prevInteractitemType = ItemType.None;
 
@@ -44,6 +46,9 @@ public sealed class PlayerControl : MonoBehaviour
     // Return Item
     [SerializeField] private ParticleImage m_particleImage_ReturnItem;
     private RectTransform m_rectTransform_ReturnItemTarget;
+
+    [Header("Event")]
+    [SerializeField] private UnityEvent m_onItemReturn;
 
 
     public void Awake()
@@ -232,6 +237,8 @@ public sealed class PlayerControl : MonoBehaviour
         m_prevInteractitemType = ItemType.None;
 
         InventoryController.Instance.RefreshAll();
+
+        m_onItemReturn.Invoke();
     }
     #endregion
 
@@ -332,14 +339,40 @@ public sealed class PlayerControl : MonoBehaviour
     private ItemType GetCurMousePosItem()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Prop.GetTile(new Vector3Int()
+        switch(SaveDataBuffer.Instance.Data.CurMask)
         {
-            x = (int)(mouseWorldPos.x),
-            y = (int)(mouseWorldPos.y),
-            z = 0
-        }));
+            case SaveData.MaskType.HoneyBee:
+                {
+                    ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Normal.GetTile(new Vector3Int()
+                    {
+                        x = (int)(mouseWorldPos.x),
+                        y = (int)(mouseWorldPos.y),
+                        z = 0
+                    }));
+                    return curItemType;
+                }
 
-        return curItemType;
+            case SaveData.MaskType.Deer:
+
+                break;
+
+            case SaveData.MaskType.Fish:
+                {
+                    ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Undersea.GetTile(new Vector3Int()
+                    {
+                        x = (int)(mouseWorldPos.x),
+                        y = (int)(mouseWorldPos.y),
+                        z = 0
+                    }));
+                    return curItemType;
+                }
+
+            case SaveData.MaskType.Mole:
+
+                break;
+        }
+
+        return ItemType.None;
     }
 
     private void CalculateAchieveInventoryItem()
