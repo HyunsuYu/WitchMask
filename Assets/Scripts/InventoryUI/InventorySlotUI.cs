@@ -68,15 +68,14 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             else
             {
                 var inventoryItem = SaveDataBuffer.Instance.Data.InventoryItems[myIndex];
-                CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].SetFromInventorySlot(inventoryItem.ItemType, inventoryItem.Count);
                 SaveDataBuffer.Instance.Data.InventoryItems[myIndex] = new SaveData.InventoryNode()
                 {
                     ItemType = craftDraggingItem.holdItem,
                     Count = craftDraggingItem.count
                 };
+                CraftTableControl.Instance[craftDraggingItem.fromCraftTableSlotIndex].SetFromInventorySlot(inventoryItem.ItemType, inventoryItem.Count);
+                
                 SaveDataBuffer.Instance.SaveData();
-
-                return;
             }
 
             CraftTableControl.Instance.BIsCraftTableSlotDraging = false;
