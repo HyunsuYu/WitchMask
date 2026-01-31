@@ -69,12 +69,30 @@ public sealed class CraftTableSlot : MonoBehaviour, IBeginDragHandler, IDragHand
         }
 
         var draggingItem = InventoryController.Instance.DraggingItem;
-        m_holdItem = draggingItem.holdItem;
-        m_count = draggingItem.count;
+        if (m_holdItem == ItemType.None)
+        {
+            m_holdItem = draggingItem.holdItem;
+            m_count = draggingItem.count;
+
+            SaveDataBuffer.Instance.Data.MinusInventoryItem(InventoryController.Instance.DraggingIndex, m_count);
+        }
+        else if(m_holdItem != ItemType.None && m_holdItem == draggingItem.holdItem)
+        {
+            m_count += draggingItem.count;
+
+            SaveDataBuffer.Instance.Data.MinusInventoryItem(InventoryController.Instance.DraggingIndex, m_count);
+        }
+        else if(m_holdItem != ItemType.None && m_holdItem != draggingItem.holdItem)
+        {
+            SaveDataBuffer.Instance.Data.InventoryItems[InventoryController.Instance.DraggingIndex].ItemType = m_holdItem;
+            SaveDataBuffer.Instance.Data.InventoryItems[InventoryController.Instance.DraggingIndex].Count = m_count;
+            
+            m_holdItem = draggingItem.holdItem;
+            m_count = draggingItem.count;
+        }
+        SaveDataBuffer.Instance.SaveData();
 
         m_image_SlotItem.sprite = InventoryController.Instance.ItemDatabase.AllItems[(int)m_holdItem].Icon;
-
-        SaveDataBuffer.Instance.Data.MinusInventoryItem(InventoryController.Instance.DraggingIndex, m_count);
         InventoryController.Instance.RefreshAll();
 
         m_image_SlotItem.color = Color.white;

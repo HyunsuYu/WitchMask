@@ -122,7 +122,7 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     [SerializeField] private Slider m_SFXSlider;
 
 
-    private void Awake()
+    public void Awake()
     {
         SetInstance(this);
         Init();

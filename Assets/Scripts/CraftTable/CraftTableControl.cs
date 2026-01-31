@@ -3,6 +3,8 @@ using System.Linq;
 using UnityEngine;
 
 using CommonUtilLib.ThreadSafe;
+using UnityEngine.UI;
+using TMPro;
 
 
 public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl>
@@ -14,10 +16,40 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
     private bool m_bisCraftTableSlotDraging = false;
     private (ItemType holdItem, int count, int fromCraftTableSlotIndex) m_draggingItem = (ItemType.None, 0, -1);
 
+    [SerializeField] private Animator m_animator;
+
+    [SerializeField] private Button m_button;
+    [SerializeField] private TMP_Text m_text_button;
+
+    [SerializeField] private Color m_color_Fail;
+    [SerializeField] private Color m_color_Good;
+    private bool m_bisCorrectCombination = false;
+
 
     public void Awake()
     {
         SetInstance(this);   
+    }
+    public void FixedUpdate()
+    {
+        // 1. 현재 6개 슬롯의 아이템 상태를 배열로 수집
+        // m_craftTableSlots의 순서(0~5)가 레시피의 ConsumedItems 순서와 1:1 매칭됩니다.
+        ItemType[] currentLayout = m_craftTableSlots.Select(slot => slot.HoldItem).ToArray();
+
+        // 2. 레시피 데이터베이스 순회 비교
+        m_bisCorrectCombination = false;
+        m_button.interactable = false;
+        m_text_button.color = m_color_Fail;
+        foreach (var recipe in m_craftRecipeSet.Recipes)
+        {
+            if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
+            {
+                m_bisCorrectCombination = true;
+                m_button.interactable = true;
+                m_text_button.color = m_color_Good;
+                return;
+            }
+        }
     }
 
     internal bool BIsCraftTableSlotDraging
@@ -86,6 +118,7 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
         }
 
         // TODO: 결과물 아이템(recipe.ResultItem) 생성 또는 지급 로직
+        m_animator.SetTrigger("Combine");
     }
 
     private void OnCraftFailure()
