@@ -34,6 +34,11 @@ public struct SaveData
     public MaskType CurMask;
 
     public int CompletedCraftItemIndex;
+
+    // ¼³Á¤
+    public float BGMVolume;
+    public float SFXVolume;
+    public float MasterVolume;
 }
 
 internal static class SaveDataExtension

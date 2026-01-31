@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
 
 public class InventoryController : SingleTonForGameObject<InventoryController>
@@ -107,7 +108,6 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
     private void InitInventoryUI()
     {
-        // 2. columnSize * rowSize ??? ???? ????
         int targetSlotCount = columnSize * rowSize;
         for (int i = 0; i < targetSlotCount; i++)
         {
@@ -118,38 +118,31 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
             m_slotUIList.Add(slotUI);
         }
 
-        // 3. ?????? ?ュ? ?? ????
         RefreshAll();
 
-        // ???? ?? ?リ????? ???? ????
         m_layout_InventoryBackground.SetActive(false);
     }
 
     public void RefreshAll()
     {
-        // ????? ?ロ???? ???
         if (SaveDataBuffer.Instance == null) return;
 
-        // ????? ?????? ?鵄 ????????
         var inventoryData = SaveDataBuffer.Instance.Data.InventoryItems;
         int targetSlotCount = columnSize * rowSize;
 
         for (int i = 0; i < targetSlotCount; i++)
         {
-            // ??????? ???????, ???? ?ュ????? ?????? ???? ???? ??? ???
             if (inventoryData != null && i < inventoryData.Length)
             {
                 ItemType type = inventoryData[i].ItemType;
                 int count = inventoryData[i].Count;
 
-                // ?????????????? ?��? ????(?????? ??) ????????
                 var itemInfo = itemDatabase.GetItemInfo(type);
                 m_slotUIList[i].UpdateSlot(itemInfo, count);
             }
             else
             {
-                // ??????? ???? ?ュ???(14?? ???? ??)?? ?? ???????? ????
-                // ItemType.None?? ???? ?? ItemInfo?? ????
+
                 m_slotUIList[i].UpdateSlot(default, 0);
             }
         }
@@ -161,6 +154,11 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
         {
             OpenInventory();
         }    
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SoundManager.Instance.SetActiveSoundPanel();  
+        }
     }
 
     public void OpenInventory()
@@ -168,7 +166,6 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
         bool isActive = !m_layout_InventoryBackground.activeSelf;
         m_layout_InventoryBackground.SetActive(isActive);
 
-        // ?リ????? ???? ?? ??? ?????? ????
         if (isActive) RefreshAll();
 
         MaskSlotControl.Instance.ActiveMaskSlotUIs();
