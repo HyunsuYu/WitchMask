@@ -21,6 +21,8 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     [SerializeField] private EventSystem m_eventSystem;
     [SerializeField] private GraphicRaycaster m_graphicsRaycaster;
 
+    private bool m_bisDragging = false;
+
 
     public void Awake()
     {
@@ -54,46 +56,23 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
     public void BeginDrag(int index, Sprite iconSprite)
     {
-        Debug.Log("BeginDrag: " + index);
+        //Debug.Log("BeginDrag: " + index);
         DraggingIndex = index;
         dragIconUI.ShowIcon(true, iconSprite);
+
+        m_bisDragging = true;
     }
     public void OnDrag(Vector2 ScreenPos) 
     {
         dragIconUI.UpdatePosition(ScreenPos);
-
-        // if(Input.GetMouseButton(1) && SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count >= 1)
-        // {
-        //     PointerEventData ped = new PointerEventData(null);
-        //     ped.position = Input.mousePosition;
-        //     List<RaycastResult> results = new List<RaycastResult>();
-        //     m_graphicsRaycaster.Raycast(ped, results);
-
-        //     foreach (RaycastResult result in results)
-        //     {
-        //         CraftTableSlot slotUI = result.gameObject.GetComponent<CraftTableSlot>();
-        //         if (slotUI != null)
-        //         {
-        //             Debug.Log("A");
-        //             slotUI.AddFromInventorySlot(SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType, 1);
-        //             SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex] = new SaveData.InventoryNode()
-        //             {
-        //                 ItemType = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType,
-        //                 Count = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count - 1
-        //             };
-        //             break;
-        //         }
-        //     }
-
-        //     SaveDataBuffer.Instance.SaveData();
-        //     RefreshAll();
-        // }
     }
     public void EndDrag()
     {
-        Debug.Log("EndDrag"+ DraggingIndex);
+        //Debug.Log("EndDrag"+ DraggingIndex);
         DraggingIndex = -1;
         dragIconUI.ShowIcon(false);
+
+        m_bisDragging = false;
     }
 
     private List<InventorySlotUI> m_slotUIList = new List<InventorySlotUI>();
@@ -142,6 +121,8 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
                 ItemType type = inventoryData[i].ItemType;
                 int count = inventoryData[i].Count;
 
+                Debug.Log(type);
+
                 // ?????????????? ?©£? ????(?????? ??) ????????
                 var itemInfo = itemDatabase.GetItemInfo(type);
                 m_slotUIList[i].UpdateSlot(itemInfo, count);
@@ -160,7 +141,32 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
         if (Input.GetKeyDown(KeyCode.E))
         {
             OpenInventory();
-        }    
+        }
+
+        if (m_bisDragging && Input.GetMouseButtonDown(1) && DraggingIndex != -1 && SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count > 1)
+        {
+            PointerEventData ped = new PointerEventData(null);
+            ped.position = Input.mousePosition;
+            List<RaycastResult> results = new List<RaycastResult>();
+            m_graphicsRaycaster.Raycast(ped, results);
+
+            foreach (RaycastResult result in results)
+            {
+                CraftTableSlot slotUI = result.gameObject.GetComponent<CraftTableSlot>();
+                if (slotUI != null)
+                {
+                    slotUI.AddFromInventorySlot(SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType, 1);
+                    SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex] = new SaveData.InventoryNode()
+                    {
+                        ItemType = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType,
+                        Count = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count - 1
+                    };
+                    SaveDataBuffer.Instance.SaveData();
+                    RefreshAll();
+                    break;
+                }
+            }
+        }
     }
 
     public void OpenInventory()

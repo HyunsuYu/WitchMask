@@ -22,6 +22,7 @@ public sealed class PlayerControl : MonoBehaviour
     [SerializeField] private float m_moveSpeed = 1.0f;
     [SerializeField] private bool m_bisMagicShotFailed = false;
 
+    [SerializeField] private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
 
     [Header("Interaction")]
@@ -105,6 +106,9 @@ public sealed class PlayerControl : MonoBehaviour
                 x = 0.0f,
                 y = m_moveSpeed
             };
+            m_spriteRenderer.flipX = false;
+            m_animator.SetBool("BIsWalk", true);
+            m_animator.SetInteger("HeadDirection", 2);
         }
         else if (m_headDirection == PlayerHeadDirection.Down && BIsPressMoveKey(PlayerHeadDirection.Down))
         {
@@ -113,6 +117,9 @@ public sealed class PlayerControl : MonoBehaviour
                 x = 0.0f,
                 y = -m_moveSpeed
             };
+            m_spriteRenderer.flipY = false;
+            m_animator.SetBool("BIsWalk", true);
+            m_animator.SetInteger("HeadDirection", 0);
         }
         else if (m_headDirection == PlayerHeadDirection.Left && BIsPressMoveKey(PlayerHeadDirection.Left))
         {
@@ -121,6 +128,9 @@ public sealed class PlayerControl : MonoBehaviour
                 x = -m_moveSpeed,
                 y = 0.0f
             };
+            m_spriteRenderer.flipX = false;
+            m_animator.SetBool("BIsWalk", true);
+            m_animator.SetInteger("HeadDirection", 1);
         }
         else if (m_headDirection == PlayerHeadDirection.Right && BIsPressMoveKey(PlayerHeadDirection.Right))
         {
@@ -129,10 +139,14 @@ public sealed class PlayerControl : MonoBehaviour
                 x = m_moveSpeed,
                 y = 0.0f
             };
+            m_spriteRenderer.flipX = true;
+            m_animator.SetBool("BIsWalk", true);
+            m_animator.SetInteger("HeadDirection", 1);
         }
         else
         {
             m_rigidbody.linearVelocity = Vector2.zero;
+            m_animator.SetBool("BIsWalk", false);
         }
         #endregion
 
@@ -144,6 +158,9 @@ public sealed class PlayerControl : MonoBehaviour
 
             m_particleImage_ShotMagic.Play();
             m_rectTransform_HoldBase.gameObject.SetActive(true);
+
+            m_animator.ResetTrigger("InteractionEnd");
+            m_animator.SetTrigger("InteractionStart");
         }
         else if(!m_bisInteractReady && Input.GetMouseButton(0) && m_mouseHoldTimer < m_mouseHoldLimit && BIsInteractionReachable())
         {
@@ -172,6 +189,9 @@ public sealed class PlayerControl : MonoBehaviour
             m_bisInteractReady = true;
             m_particleImage_ShotMagic.Stop();
             m_rectTransform_HoldBase.gameObject.SetActive(false);
+
+            m_animator.ResetTrigger("InteractionStart");
+            m_animator.SetTrigger("InteractionEnd");
         }
 
         if (m_mouseHoldTimer >= m_mouseHoldLimit && BIsInteractionReachable())
@@ -182,6 +202,9 @@ public sealed class PlayerControl : MonoBehaviour
                 m_prevInteractitemType = curItemType;
 
                 m_particleImage_ShotMagic.Stop();
+
+                m_animator.ResetTrigger("InteractionStart");
+                m_animator.SetTrigger("InteractionEnd");
             }
         }
         #endregion

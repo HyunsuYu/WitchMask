@@ -118,7 +118,7 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     private bool m_isMuteMaster = false;
 
 
-    private void Awake()
+    public void Awake()
     {
         SetInstance(this);
         Init();
