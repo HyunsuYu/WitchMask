@@ -46,9 +46,53 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
     #region Unity Callbacks
     public void TryCraft()
     {
+        // 1. 현재 6개 슬롯의 아이템 상태를 배열로 수집
+        // m_craftTableSlots의 순서(0~5)가 레시피의 ConsumedItems 순서와 1:1 매칭됩니다.
+        ItemType[] currentLayout = m_craftTableSlots.Select(slot => slot.HoldItem).ToArray();
 
+        // 2. 레시피 데이터베이스 순회 비교
+        foreach (var recipe in m_craftRecipeSet.Recipes)
+        {
+            if (CheckRecipeMatch(currentLayout, recipe.ConsumedItems))
+            {
+                OnCraftSuccess(recipe);
+                return;
+            }
+        }
+
+        Debug.Log("일치하는 조합법이 없습니다.");
     }
     #endregion
+
+    private bool CheckRecipeMatch(ItemType[] current, ItemType[] recipe)
+    {
+        // 레시피 설정이 잘못되어 6개가 아니면 무시
+        if (recipe == null || recipe.Length != 6) return false;
+
+        // SequenceEqual은 [순서, 종류, 개수]가 모두 일치해야 true를 반환합니다.
+        // 예: [물, 물, 불, None, None, None] 순서가 정확해야 함
+        return current.SequenceEqual(recipe);
+    }
+
+    private void OnCraftSuccess(CraftRecipeSet.RecipeData recipe)
+    {
+        Debug.Log($"조합 완료: {recipe.Name}");
+        SoundManager.Instance.PlaySfx(SoundManager.SFX.CraftSFX00);
+
+        // 조합 성공 후 모든 슬롯 초기화
+        foreach (var slot in m_craftTableSlots)
+        {
+            slot.ResetFromInventorySlot();
+        }
+
+        // TODO: 결과물 아이템(recipe.ResultItem) 생성 또는 지급 로직
+    }
+
+    private void OnCraftFailure()
+    {
+        Debug.Log("조합법이 틀렸습니다.");
+        // TODO: 실패 사운드나 연출
+    }
 
     internal CraftTableSlot this[in int index]
     {
@@ -65,7 +109,7 @@ public sealed class CraftTableControl : SingleTonForGameObject<CraftTableControl
 
     internal void FlushItems()
     {
-
+        
     }
 
     protected override void Dispose(bool bisDisposing)

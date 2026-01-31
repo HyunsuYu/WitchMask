@@ -54,6 +54,11 @@ public sealed class PlayerControl : MonoBehaviour
     }
     public void Update()
     {
+        if(CraftTableControl.Instance.BIsCraftTableSlotDraging || InventoryController.Instance.DraggingIndex != -1)
+        {
+            return;
+        }
+
         #region Movement
         // Start or change move direction
         if (BIsPressMoveKeyDown(PlayerHeadDirection.Up))
