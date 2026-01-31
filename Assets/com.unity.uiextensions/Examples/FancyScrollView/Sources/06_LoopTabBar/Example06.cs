@@ -4,20 +4,37 @@
  * Licensed under MIT (https://github.com/setchi/FancyScrollView/blob/master/LICENSE)
  */
 
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
 {
-    class CraftRecipeController : MonoBehaviour
+    class Example06 : MonoBehaviour
     {
         [SerializeField] ScrollView scrollView = default;
         [SerializeField] Window[] windows = default;
-        private int m_curWindowIndex;
-
+        [SerializeField] Button prevCellButton = default;
+        [SerializeField] Button nextCellButton = default;
         Window currentWindow;
 
         void Start()
         {
+            StartCoroutine(LateStart());
+        }
+
+        IEnumerator LateStart()
+        {
+            yield return null;
+            windows = GetComponentsInChildren<Window>();
+            prevCellButton.onClick.AddListener(scrollView.SelectPrevCell);
+            nextCellButton.onClick.AddListener(scrollView.SelectNextCell);
+            
+            foreach (var window in windows)
+            {
+                window.gameObject.SetActive(false);
+            }
+
             scrollView.OnSelectionChanged(OnSelectionChanged);
 
             var items = Enumerable.Range(0, windows.Length)
@@ -30,7 +47,6 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
 
         void OnSelectionChanged(int index, MovementDirection direction)
         {
-            m_curWindowIndex = index;
             if (currentWindow != null)
             {
                 currentWindow.Out(direction);

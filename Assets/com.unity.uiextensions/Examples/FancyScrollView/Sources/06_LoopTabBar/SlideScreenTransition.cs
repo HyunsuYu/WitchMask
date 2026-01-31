@@ -6,10 +6,9 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
     class SlideScreenTransition : MonoBehaviour
     {
         [SerializeField] RectTransform targetTransform = default;
-        [SerializeField] GraphicRaycaster graphicRaycaster = default;
         [SerializeField] CanvasGroup canvasGroup = default; // Alpha 조절을 위해 추가
 
-        const float Duration = 0.3f;
+        const float Duration = 0.05f;
 
         bool shouldAnimate, isOutAnimation;
         float timer, startX, endX;
@@ -26,7 +25,6 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
             timer = Duration;
             isOutAnimation = isOut;
             shouldAnimate = true;
-            graphicRaycaster.enabled = false;
 
             if (!isOutAnimation)
             {
@@ -70,7 +68,6 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
             }
 
             shouldAnimate = false;
-            graphicRaycaster.enabled = true;
 
             if (isOutAnimation)
             {

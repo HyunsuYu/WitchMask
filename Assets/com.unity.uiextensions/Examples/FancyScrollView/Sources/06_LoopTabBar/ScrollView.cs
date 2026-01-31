@@ -72,7 +72,7 @@ namespace UnityEngine.UI.Extensions.Examples.FancyScrollViewExample06
                 return;
             }
 
-            scroller.ScrollTo(index, 0.35f, Ease.OutCubic);
+            scroller.ScrollTo(index, 0.1f, Ease.OutCubic);
         }
     }
 }
