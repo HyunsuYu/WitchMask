@@ -2,6 +2,8 @@ using CommonUtilLib.ThreadSafe;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 
 public class InventoryController : SingleTonForGameObject<InventoryController>
@@ -15,6 +17,9 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     [SerializeField] private InventoryDragIcon dragIconUI;
 
     [SerializeField] private GameObject m_gameObjectt_OpenInventoryBtn;
+
+    [SerializeField] private EventSystem m_eventSystem;
+    [SerializeField] private GraphicRaycaster m_graphicsRaycaster;
 
 
     public void Awake()
@@ -56,6 +61,33 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     public void OnDrag(Vector2 ScreenPos) 
     {
         dragIconUI.UpdatePosition(ScreenPos);
+
+        // if(Input.GetMouseButton(1) && SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count >= 1)
+        // {
+        //     PointerEventData ped = new PointerEventData(null);
+        //     ped.position = Input.mousePosition;
+        //     List<RaycastResult> results = new List<RaycastResult>();
+        //     m_graphicsRaycaster.Raycast(ped, results);
+
+        //     foreach (RaycastResult result in results)
+        //     {
+        //         CraftTableSlot slotUI = result.gameObject.GetComponent<CraftTableSlot>();
+        //         if (slotUI != null)
+        //         {
+        //             Debug.Log("A");
+        //             slotUI.AddFromInventorySlot(SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType, 1);
+        //             SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex] = new SaveData.InventoryNode()
+        //             {
+        //                 ItemType = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].ItemType,
+        //                 Count = SaveDataBuffer.Instance.Data.InventoryItems[DraggingIndex].Count - 1
+        //             };
+        //             break;
+        //         }
+        //     }
+
+        //     SaveDataBuffer.Instance.SaveData();
+        //     RefreshAll();
+        // }
     }
     public void EndDrag()
     {
@@ -75,7 +107,7 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
     private void InitInventoryUI()
     {
-        // 2. columnSize * rowSize 만큼 슬롯 생성
+        // 2. columnSize * rowSize ??? ???? ????
         int targetSlotCount = columnSize * rowSize;
         for (int i = 0; i < targetSlotCount; i++)
         {
@@ -86,38 +118,38 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
             m_slotUIList.Add(slotUI);
         }
 
-        // 3. 데이터 로드 및 적용
+        // 3. ?????? ?ε? ?? ????
         RefreshAll();
 
-        // 시작 시 인벤토리는 닫힌 상태
+        // ???? ?? ?κ????? ???? ????
         m_layout_InventoryBackground.SetActive(false);
     }
 
     public void RefreshAll()
     {
-        // 싱글톤 인스턴스 확인
+        // ????? ?ν???? ???
         if (SaveDataBuffer.Instance == null) return;
 
-        // 세이브 데이터 배열 가져오기
+        // ????? ?????? ?迭 ????????
         var inventoryData = SaveDataBuffer.Instance.Data.InventoryItems;
         int targetSlotCount = columnSize * rowSize;
 
         for (int i = 0; i < targetSlotCount; i++)
         {
-            // 데이터가 존재하고, 현재 인덱스가 데이터 범위 내에 있는 경우
+            // ??????? ???????, ???? ?ε????? ?????? ???? ???? ??? ???
             if (inventoryData != null && i < inventoryData.Length)
             {
                 ItemType type = inventoryData[i].ItemType;
                 int count = inventoryData[i].Count;
 
-                // 데이터베이스에서 시각 정보(아이콘 등) 가져오기
+                // ?????????????? ?ð? ????(?????? ??) ????????
                 var itemInfo = itemDatabase.GetItemInfo(type);
                 m_slotUIList[i].UpdateSlot(itemInfo, count);
             }
             else
             {
-                // 데이터가 없는 인덱스(14번 이후 등)는 빈 슬롯으로 초기화
-                // ItemType.None을 가진 기본 ItemInfo를 전달
+                // ??????? ???? ?ε???(14?? ???? ??)?? ?? ???????? ????
+                // ItemType.None?? ???? ?? ItemInfo?? ????
                 m_slotUIList[i].UpdateSlot(default, 0);
             }
         }
@@ -136,7 +168,7 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
         bool isActive = !m_layout_InventoryBackground.activeSelf;
         m_layout_InventoryBackground.SetActive(isActive);
 
-        // 인벤토리가 열릴 때 최신 정보로 갱신
+        // ?κ????? ???? ?? ??? ?????? ????
         if (isActive) RefreshAll();
 
         MaskSlotControl.Instance.ActiveMaskSlotUIs();

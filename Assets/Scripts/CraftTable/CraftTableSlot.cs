@@ -10,6 +10,7 @@ public sealed class CraftTableSlot : MonoBehaviour, IBeginDragHandler, IDragHand
     [SerializeField] private CanvasGroup m_canvasGroup;
 
     private ItemType m_holdItem = ItemType.None;
+    public ItemType HoldItem => m_holdItem;
     private int m_count;
 
 
@@ -100,6 +101,14 @@ public sealed class CraftTableSlot : MonoBehaviour, IBeginDragHandler, IDragHand
     {
         m_holdItem = itemType;
         m_count = count;
+
+        m_image_SlotItem.color = Color.white;
+        m_image_SlotItem.sprite = InventoryController.Instance.ItemDatabase.AllItems[(int)m_holdItem].Icon;
+    }
+    internal void AddFromInventorySlot(in ItemType itemType, in int count)
+    {
+        m_holdItem = itemType;
+        m_count += count;
 
         m_image_SlotItem.color = Color.white;
         m_image_SlotItem.sprite = InventoryController.Instance.ItemDatabase.AllItems[(int)m_holdItem].Icon;

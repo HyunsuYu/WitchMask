@@ -9,11 +9,11 @@ public enum ItemType
     /// </summary>
     Flower_Red,
     /// <summary>
-    /// 수국
+    /// 네모필라 멘지에시 꽃
     /// </summary>
     Flower_Blue,
     /// <summary>
-    /// 민들레
+    /// 황매화 
     /// </summary>
     Flower_Yellow,
     /// <summary>
