@@ -60,7 +60,11 @@ public sealed class PlayerControl : MonoBehaviour
     }
     public void Update()
     {
-        if(CraftTableControl.Instance.BIsCraftTableSlotDraging || InventoryController.Instance.DraggingIndex != -1)
+        //if(CraftTableControl.Instance.BIsCraftTableSlotDraging || InventoryController.Instance.DraggingIndex != -1)
+        //{
+        //    return;
+        //}
+        if(SoundManager.Instance.BIsOpened || InventoryController.Instance.BIsOpened)
         {
             return;
         }
@@ -343,14 +347,19 @@ public sealed class PlayerControl : MonoBehaviour
         {
             case SaveData.MaskType.HoneyBee:
                 {
-                    ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Normal.GetTile(new Vector3Int()
+                    var tileBase = m_tilemap_Normal.GetTile(new Vector3Int()
                     {
                         x = (int)(mouseWorldPos.x),
                         y = (int)(mouseWorldPos.y),
                         z = 0
-                    }));
-                    return curItemType;
+                    });
+                    if (tileBase != null)
+                    {
+                        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(tileBase);
+                        return curItemType;
+                    }
                 }
+                break;
 
             case SaveData.MaskType.Deer:
 
@@ -358,14 +367,19 @@ public sealed class PlayerControl : MonoBehaviour
 
             case SaveData.MaskType.Fish:
                 {
-                    ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Undersea.GetTile(new Vector3Int()
+                    var tileBase = m_tilemap_Undersea.GetTile(new Vector3Int()
                     {
                         x = (int)(mouseWorldPos.x),
                         y = (int)(mouseWorldPos.y),
                         z = 0
-                    }));
-                    return curItemType;
+                    });
+                    if(tileBase != null)
+                    {
+                        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(tileBase);
+                        return curItemType;
+                    }
                 }
+                break;
 
             case SaveData.MaskType.Mole:
 

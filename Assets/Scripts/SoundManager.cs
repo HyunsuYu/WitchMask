@@ -37,6 +37,14 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     }
     private float m_masterVolume = 0.5f;
 
+    internal bool BIsOpened
+    {
+        get
+        {
+            return m_soundSettingsUI.activeSelf;
+        }
+    }
+
 
     [Header("BGM")]
     public AudioClip[] bgmClips = new AudioClip[(int)BGM.Count];
