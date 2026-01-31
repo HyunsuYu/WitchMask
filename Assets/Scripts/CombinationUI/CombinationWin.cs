@@ -1,18 +1,21 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
     public class CombinationWin : MonoBehaviour
     {
-        [SerializeField] private TMP_Text TitleText;
-        [SerializeField] private TMP_Text HintText;
+        [SerializeField] private TMP_Text m_titleText;
+        [SerializeField] private TMP_Text m_tintText;
+        [SerializeField] private Image m_resultImage;
 
         public void RefreshRecipe(int recipeIndex)
         {
             // 1. CraftTableControl 싱글톤을 통해 레시피 데이터 접근
             var recipeSet = CraftTableControl.Instance.CraftRecipeSet;
-            TitleText.text = recipeSet.Recipes[recipeIndex].Name;
-            HintText.text = recipeSet.Recipes[recipeIndex].Hint;
+            m_titleText.text = recipeSet.Recipes[recipeIndex].Name;
+            m_tintText.text = recipeSet.Recipes[recipeIndex].Hint;
+            m_resultImage.sprite = recipeSet.Recipes[recipeIndex].Image;
             
             if (recipeSet == null || recipeIndex >= recipeSet.Recipes.Length)
             {
