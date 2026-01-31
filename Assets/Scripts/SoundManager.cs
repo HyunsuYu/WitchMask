@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
 using CommonUtilLib.ThreadSafe;
+using UnityEngine.UI;
 
 /// <summary>
 /// 사운드 관리
@@ -20,7 +21,7 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     public enum SFX
     {
         CraftSFX00,
-        SwapClickSFX,
+        SwapClickSFX01,
         Count
     }
 
@@ -116,6 +117,9 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
         }
     }
     private bool m_isMuteMaster = false;
+    [SerializeField] private GameObject m_soundSettingsUI;
+    [SerializeField] private Slider m_BGMSlider;
+    [SerializeField] private Slider m_SFXSlider;
 
 
     private void Awake()
@@ -181,7 +185,12 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
             sfxClips[i] = Resources.Load<AudioClip>($"Sound/SFX/{(SFX)i}");
         }
 
-        StartBGMRandomLoop(Random.Range(0, (int)BGM.Count));
+        PlayBgm(BGM.CasualMusicLoop08_1, true);
+    }
+    private void Start()
+    {
+        m_BGMSlider.value = SaveDataBuffer.Instance.Data.BGMVolume;
+        m_SFXSlider.value = SaveDataBuffer.Instance.Data.SFXVolume;
     }
 
     // BGM을 실행
@@ -296,15 +305,32 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     {
         Mixer.SetFloat("MasterSound", Mathf.Log10(val) * 20);
     }
+    public void MasterSoundVolume(Slider sliderBar)
+    {
+        Mixer.SetFloat("MasterSound", Mathf.Log10(sliderBar.value) * 20);
+        var data = SaveDataBuffer.Instance.Data;
+        data.MasterVolume = sliderBar.value;
+        SaveDataBuffer.Instance.Data = data;
+    }
+
     // Mixer를 이용해 BGM 크기 조절
     public void BGMSoundVolume(float val)
     {
         Mixer.SetFloat("BGMSound", Mathf.Log10(val) * 20);
     }
+    public void BGMSoundVolume()
+    {
+        Mixer.SetFloat("BGMSound", Mathf.Log10(m_BGMSlider.value) * 20);
+    }
+
     // Mixer를 이용해 SFX 크기 조절
     public void SFXSoundVolume(float val)
     {
         Mixer.SetFloat("SFXSound", Mathf.Log10(val) * 20);
+    }
+    public void SFXSoundVolume()
+    {
+        Mixer.SetFloat("SFXSound", Mathf.Log10(m_SFXSlider.value) * 20);
     }
 
     // 특정 값까지 BGM을 서서히 줄임
@@ -316,8 +342,8 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     // BGM을 실행하고 끝났을시 랜덤으로 다시 돌림
     public void StartBGMRandomLoop(int num)
     {
-        // StopCoroutine("BGMRandomLoop");
-        // StartCoroutine("BGMRandomLoop", num);
+        StopCoroutine("BGMRandomLoop");
+        StartCoroutine("BGMRandomLoop", num);
     }
 
     // 사운드 크기가 특정값까지 자연스럽게 바뀜
@@ -421,5 +447,19 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
     protected override void Dispose(bool bisDisposing)
     {
         throw new System.NotImplementedException();
+    }
+
+    public void SetActiveSoundPanel()
+    {
+        m_soundSettingsUI.SetActive(!m_soundSettingsUI.activeSelf);
+
+        if(!m_soundSettingsUI.activeSelf)
+        {
+            var data = SaveDataBuffer.Instance.Data;
+            data.BGMVolume = m_BGMSlider.value;
+            data.SFXVolume = m_SFXSlider.value;
+            SaveDataBuffer.Instance.Data = data;
+            SaveDataBuffer.Instance.SaveData();
+        }
     }
 }

@@ -143,7 +143,7 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
         m_bisMaskSwapStarted = true;
 
         m_material.SetInteger("_BIsSlotActive", 1);
-        SoundManager.Instance.PlaySfx(SoundManager.SFX.SwapClickSFX);
+        SoundManager.Instance.PlaySfx(SoundManager.SFX.SwapClickSFX01);
     }
 
     protected override void Dispose(bool bisDisposing)
