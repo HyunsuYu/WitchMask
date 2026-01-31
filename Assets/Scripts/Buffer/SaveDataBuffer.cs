@@ -58,10 +58,7 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
                 PlayerPos = Vector2Int.zero,
                 InventoryItems = new SaveData.InventoryNode[32],
                 CurMask = global::SaveData.MaskType.HoneyBee,
-                CompletedCraftItemIndex = -1,
-                BGMVolume = 1.0f,
-                SFXVolume = 1.0f,
-                MasterVolume = 1.0f
+                CompletedCraftItemIndex = -1
             };
             for(int index = 0; index < m_saveData.Value.InventoryItems.Length; index++)
             {
