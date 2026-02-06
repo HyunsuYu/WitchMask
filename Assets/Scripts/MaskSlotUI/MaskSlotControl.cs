@@ -12,6 +12,9 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
     [Serializable] public struct MaskSlot
     {
         public Image Image_Mask;
+        public Image Image_BtnBackground;
+        public Button Button;
+
         public RectTransform RectTransform_Mask;
 
         public Vector2 MaskOffset;
@@ -40,12 +43,23 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
     private float m_moveTimer = 0.0f;
 
     private bool m_bisMaskSwapStarted = false;
-    private bool m_bisGoforward = false;
+    private bool m_bisGoforward = true;
 
     [Header("Cur Selected Mask Slot")]
     [SerializeField] private RectTransform m_rectTransform_CurSelectedMaskSlotMarker;
     [SerializeField] private Vector2 m_curMaskSlotPos;
     [SerializeField] private float m_curMaskSlotMass;
+
+    [Header("Transition")]
+    [SerializeField] private GameObject m_layout_Transition;
+    [SerializeField] private Material m_material_Transition;
+
+    public float OuterMass = 0.0f;
+    public float InnerMass = 0.0f;
+
+    [SerializeField] private Animator m_animator_Transition;
+
+    [SerializeField] private GameObject[] m_layout_Maps;
 
 
     public void Awake()
@@ -83,8 +97,20 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
         {
             m_maskSlots[index].MaskType = unusedMasks[index];
             m_maskSlots[index].Image_Mask.sprite = m_maskSprites[(int)unusedMasks[index]];
+
+            if(m_maskSlots[index].MaskType == SaveData.MaskType.Deer || m_maskSlots[index].MaskType == SaveData.MaskType.Mole)
+            {
+                m_maskSlots[index].Image_Mask.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+                m_maskSlots[index].Image_BtnBackground.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+                m_maskSlots[index].Button.interactable = false;
+            }
         }
         m_image_CurMaskSlot.sprite = m_maskSprites[(int)curSelectedMask];
+
+        for (int index = 0; index < Enum.GetValues(typeof(SaveData.MaskType)).Length; index++)
+            {
+                m_layout_Maps[index].SetActive(index == (int)SaveDataBuffer.Instance.Data.CurMask);
+            }
     }
     public void Update()
     {
@@ -112,7 +138,11 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
                 {
                     PlayerPos = SaveDataBuffer.Instance.Data.PlayerPos,
                     InventoryItems = SaveDataBuffer.Instance.Data.InventoryItems,
-                    CurMask = m_maskSlots[m_movingSlotIndex].MaskType
+                    CurMask = m_maskSlots[m_movingSlotIndex].MaskType,
+                    BGMVolume = SaveDataBuffer.Instance.Data.BGMVolume,
+                    SFXVolume = SaveDataBuffer.Instance.Data.SFXVolume,
+                    CompletedCraftItemIndex = SaveDataBuffer.Instance.Data.CompletedCraftItemIndex,
+                    MasterVolume = SaveDataBuffer.Instance.Data.MasterVolume
                 };
                 SaveDataBuffer.Instance.SaveData();
                 m_maskSlots[m_movingSlotIndex].MaskType = prevMask;
@@ -127,8 +157,30 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
                 m_bisGoforward = true;
 
                 m_material.SetInteger("_BIsSlotActive", 0);
+
+                m_layout_Transition.SetActive(true);
+                m_animator_Transition.Play("Transition");
             }
         }
+
+        if(InnerMass >= 0.85f)
+        {
+            m_layout_Transition.SetActive(false);
+        }
+        if(OuterMass >= 0.85f)
+        {
+            for (int index = 0; index < Enum.GetValues(typeof(SaveData.MaskType)).Length; index++)
+            {
+                m_layout_Maps[index].SetActive(index == (int)SaveDataBuffer.Instance.Data.CurMask);
+            }
+
+            HomeController.Instance.UpdateOpenBtns();
+        }
+    }
+    public void FixedUpdate()
+    {
+        m_material_Transition.SetFloat("_OuterMass", OuterMass);
+        m_material_Transition.SetFloat("_InnerMass", InnerMass);
     }
 
     #region Unity Callbacks

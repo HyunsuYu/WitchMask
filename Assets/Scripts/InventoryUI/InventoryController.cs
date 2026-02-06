@@ -9,7 +9,7 @@ using Unity.VisualScripting;
 
 public class InventoryController : SingleTonForGameObject<InventoryController>
 {
-    [SerializeField] private GameObject m_layout_InventoryBackground;
+    [SerializeField] private GameObject m_layout_GridBackground;
     [SerializeField] private GameObject inventoryPanel; 
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private int columnSize = 8;
@@ -28,6 +28,14 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
     public void Awake()
     {
         SetInstance(this);
+    }
+
+    internal bool BIsOpened
+    {
+        get
+        {
+            return m_layout_GridBackground.activeSelf;
+        }
     }
 
     public int DraggingIndex { get; private set; } = -1;
@@ -99,7 +107,7 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
         RefreshAll();
 
-        m_layout_InventoryBackground.SetActive(false);
+        m_layout_GridBackground.SetActive(false);
     }
 
     public void RefreshAll()
@@ -129,12 +137,12 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && !SoundManager.Instance.BIsOpened)
         {
             OpenInventory();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !InventoryController.Instance.BIsOpened)
         {
             SoundManager.Instance.SetActiveSoundPanel();
         }
@@ -167,8 +175,9 @@ public class InventoryController : SingleTonForGameObject<InventoryController>
 
     public void OpenInventory()
     {
-        bool isActive = !m_layout_InventoryBackground.activeSelf;
-        m_layout_InventoryBackground.SetActive(isActive);
+        bool isActive = !m_layout_GridBackground.activeSelf;
+        m_layout_GridBackground.SetActive(isActive);
+        m_layout_GridBackground.SetActive(isActive);
 
         if (isActive) RefreshAll();
 

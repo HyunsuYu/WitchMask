@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 using AssetKits.ParticleImage;
+using UnityEngine.Events;
 
 
 public sealed class PlayerControl : MonoBehaviour
@@ -26,7 +27,8 @@ public sealed class PlayerControl : MonoBehaviour
     private Animator m_animator;
 
     [Header("Interaction")]
-    [SerializeField] private Tilemap m_tilemap_Prop;
+    [SerializeField] private Tilemap m_tilemap_Undersea;
+    [SerializeField] private Tilemap m_tilemap_Normal;
 
     private ItemType m_prevInteractitemType = ItemType.None;
 
@@ -45,6 +47,9 @@ public sealed class PlayerControl : MonoBehaviour
     [SerializeField] private ParticleImage m_particleImage_ReturnItem;
     private RectTransform m_rectTransform_ReturnItemTarget;
 
+    [Header("Event")]
+    [SerializeField] private UnityEvent m_onItemReturn;
+
 
     public void Awake()
     {
@@ -55,10 +60,15 @@ public sealed class PlayerControl : MonoBehaviour
     }
     public void Update()
     {
-        if(CraftTableControl.Instance.BIsCraftTableSlotDraging || InventoryController.Instance.DraggingIndex != -1)
+        //if(CraftTableControl.Instance.BIsCraftTableSlotDraging || InventoryController.Instance.DraggingIndex != -1)
+        //{
+        //    return;
+        //}
+        if (SoundManager.Instance.BIsOpened || InventoryController.Instance.BIsOpened || HomeController.Instance.BisOpened)
         {
             return;
         }
+
 
         #region Movement
         // Start or change move direction
@@ -151,7 +161,7 @@ public sealed class PlayerControl : MonoBehaviour
         #endregion
 
         #region Interaction
-        if(Input.GetMouseButtonDown(0) && BIsInteractionReachable())
+        if (Input.GetMouseButtonDown(0) && BIsInteractionReachable())
         {
             m_bisInteractReady = false;
             m_bisMagicShotFailed = false;
@@ -162,7 +172,7 @@ public sealed class PlayerControl : MonoBehaviour
             m_animator.ResetTrigger("InteractionEnd");
             m_animator.SetTrigger("InteractionStart");
         }
-        else if(!m_bisInteractReady && Input.GetMouseButton(0) && m_mouseHoldTimer < m_mouseHoldLimit && BIsInteractionReachable())
+        else if (!m_bisInteractReady && Input.GetMouseButton(0) && m_mouseHoldTimer < m_mouseHoldLimit && BIsInteractionReachable())
         {
             m_mouseHoldTimer += Time.deltaTime;
 
@@ -181,7 +191,7 @@ public sealed class PlayerControl : MonoBehaviour
             };
             m_rectTransform_HoldBase.anchoredPosition = m_rectTransform_ShowMagicTarget.anchoredPosition;
         }
-        else if(Input.GetMouseButtonUp(0) || !BIsInteractionReachable())
+        else if (Input.GetMouseButtonUp(0) || !BIsInteractionReachable())
         {
             m_bisMagicShotFailed = true;
 
@@ -213,7 +223,7 @@ public sealed class PlayerControl : MonoBehaviour
     #region Unity Callbacks
     public void HandleReturnItem()
     {
-        if(m_bisMagicShotFailed)
+        if (m_bisMagicShotFailed)
         {
             return;
         }
@@ -232,6 +242,8 @@ public sealed class PlayerControl : MonoBehaviour
         m_prevInteractitemType = ItemType.None;
 
         InventoryController.Instance.RefreshAll();
+
+        m_onItemReturn.Invoke();
     }
     #endregion
 
@@ -318,7 +330,7 @@ public sealed class PlayerControl : MonoBehaviour
             y = (int)transform.position.y
         };
 
-        if(Mathf.Abs((int)mouseWorldPos.x - curPlayerPos.x) > 2)
+        if (Mathf.Abs((int)mouseWorldPos.x - curPlayerPos.x) > 2)
         {
             return false;
         }
@@ -332,32 +344,71 @@ public sealed class PlayerControl : MonoBehaviour
     private ItemType GetCurMousePosItem()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(m_tilemap_Prop.GetTile(new Vector3Int()
+        switch (SaveDataBuffer.Instance.Data.CurMask)
         {
-            x = (int)(mouseWorldPos.x),
-            y = (int)(mouseWorldPos.y),
-            z = 0
-        }));
+            case SaveData.MaskType.HoneyBee:
+                {
+                    var tileBase = m_tilemap_Normal.GetTile(new Vector3Int()
+                    {
+                        x = (int)(mouseWorldPos.x),
+                        y = (int)(mouseWorldPos.y),
+                        z = 0
+                    });
+                    if (tileBase != null)
+                    {
+                        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(tileBase);
+                        return curItemType;
+                    }
+                }
+                break;
 
-        return curItemType;
+            case SaveData.MaskType.Deer:
+
+                break;
+
+            case SaveData.MaskType.Fish:
+                {
+                    var tileBase = m_tilemap_Undersea.GetTile(new Vector3Int()
+                    {
+                        x = (int)(mouseWorldPos.x),
+                        y = (int)(mouseWorldPos.y),
+                        z = 0
+                    });
+                    if (tileBase != null)
+                    {
+                        ItemType curItemType = TileBaseSetBuffer.Instance.Data.GetItemType(tileBase);
+                        return curItemType;
+                    }
+                }
+                break;
+
+            case SaveData.MaskType.Mole:
+
+                break;
+        }
+
+        return ItemType.None;
     }
 
     private void CalculateAchieveInventoryItem()
     {
-        switch(m_prevInteractitemType)
+        switch (m_prevInteractitemType)
         {
             case ItemType.Flower_Red:
             case ItemType.Flower_Blue:
             case ItemType.Flower_Yellow:
             case ItemType.Flower_White:
-                if(UnityEngine.Random.Range(0.0f, 1.0f) < 0.3f)
+                if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.3f)
                 {
                     SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.Seed);
                 }
                 break;
 
             case ItemType.Honey:
-
+                if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.2f)
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.ButterflyWing);
+                }
                 break;
 
             case ItemType.Seed:
@@ -369,7 +420,14 @@ public sealed class PlayerControl : MonoBehaviour
                 break;
 
             case ItemType.Pearl:
-
+                if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.8f)
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.Bubble);
+                }
+                else
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.Pearl);
+                }
                 break;
 
             case ItemType.Seashell:
@@ -381,7 +439,10 @@ public sealed class PlayerControl : MonoBehaviour
                 break;
 
             case ItemType.Conch:
-
+                if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.2f)
+                {
+                    SaveDataBuffer.Instance.Data.AddInventoryItem(ItemType.FishSkin);
+                }
                 break;
 
             case ItemType.Coral:
@@ -399,7 +460,11 @@ public sealed class PlayerControl : MonoBehaviour
 
                 break;
         }
-        SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
+
+        if (m_prevInteractitemType != ItemType.Pearl)
+        {
+            SaveDataBuffer.Instance.Data.AddInventoryItem(m_prevInteractitemType);
+        }
         SaveDataBuffer.Instance.SaveData();
     }
     #endregion

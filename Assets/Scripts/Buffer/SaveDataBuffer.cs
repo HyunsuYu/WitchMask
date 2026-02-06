@@ -94,6 +94,10 @@ public sealed class SaveDataBuffer : SingleTonForGameObject<SaveDataBuffer>
 
         File.WriteAllText(DataPath, jsonData);
     }
+    internal void RemoveFile()
+    {
+        File.Delete(DataPath);
+    }
 
     protected override void Dispose(bool bisDisposing)
     {

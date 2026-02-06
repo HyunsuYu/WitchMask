@@ -18,16 +18,22 @@ public sealed class Sticker : MonoBehaviour
     private float m_rate = 0f;
     private Coroutine m_aniRoutine;
 
-    private void Start()
+
+    public void Start()
     {
-        // 시작과 동시에 애니메이션 재생
-        PlayAttachAnimation();
+        Init();
     }
 
     public void PlayAttachAnimation()
     {
+        gameObject.SetActive(true);
         if (m_aniRoutine != null) StopCoroutine(m_aniRoutine);
         m_aniRoutine = StartCoroutine(AnimateSticker());
+    }
+
+    internal void Init()
+    {
+        gameObject.SetActive(false);
     }
 
     private IEnumerator AnimateSticker()
