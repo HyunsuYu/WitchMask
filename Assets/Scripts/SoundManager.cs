@@ -1,8 +1,8 @@
+using CommonUtilLib.ThreadSafe;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using System.Collections.Generic;
-using CommonUtilLib.ThreadSafe;
 using UnityEngine.UI;
 
 /// <summary>
@@ -469,5 +469,11 @@ public class SoundManager : SingleTonForGameObject<SoundManager>
             SaveDataBuffer.Instance.Data = data;
             SaveDataBuffer.Instance.SaveData();
         }
+    }
+
+    public void ExitGame()
+    {
+        SaveDataBuffer.Instance.RemoveFile();
+        Application.Quit();
     }
 }

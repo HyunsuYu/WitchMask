@@ -138,7 +138,11 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
                 {
                     PlayerPos = SaveDataBuffer.Instance.Data.PlayerPos,
                     InventoryItems = SaveDataBuffer.Instance.Data.InventoryItems,
-                    CurMask = m_maskSlots[m_movingSlotIndex].MaskType
+                    CurMask = m_maskSlots[m_movingSlotIndex].MaskType,
+                    BGMVolume = SaveDataBuffer.Instance.Data.BGMVolume,
+                    SFXVolume = SaveDataBuffer.Instance.Data.SFXVolume,
+                    CompletedCraftItemIndex = SaveDataBuffer.Instance.Data.CompletedCraftItemIndex,
+                    MasterVolume = SaveDataBuffer.Instance.Data.MasterVolume
                 };
                 SaveDataBuffer.Instance.SaveData();
                 m_maskSlots[m_movingSlotIndex].MaskType = prevMask;
@@ -169,6 +173,8 @@ public sealed class MaskSlotControl : SingleTonForGameObject<MaskSlotControl>
             {
                 m_layout_Maps[index].SetActive(index == (int)SaveDataBuffer.Instance.Data.CurMask);
             }
+
+            HomeController.Instance.UpdateOpenBtns();
         }
     }
     public void FixedUpdate()
